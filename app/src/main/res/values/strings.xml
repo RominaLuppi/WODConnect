@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">WOD Connect</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="login">Bienvenid@!</string>
+    <string name="forgot_password">Olvidé mi contraseña</string>
+    <string name="btn_login">Iniciar Sesión</string>
+    <string name="msj_error">Email y/o contraseña no válidos </string>
+
+
+    <string name="home_text">"Tu siguiente entrenamiento comienza aquí" </string>
+    <string name="home_btn">Empezar </string>
+
+
+    <string name="txt_reset_pasw">Introduce tu email para restablecer la contraseña</string>
+    <string name="btn_reset">Enviar</string>
+
+</resources>
