@@ -48,9 +48,11 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun LoginScreen(navController: NavController,
-                viewModel: LoginViewModel,
-                modifier: Modifier = Modifier) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel,
+    modifier: Modifier = Modifier
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -64,9 +66,11 @@ fun LoginScreen(navController: NavController,
 
 @Composable
 fun Login(navController: NavController, modifier: Modifier, viewModel: LoginViewModel) {
-    val email : String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LifeData del viewModel
-    val password : String by viewModel.password.observeAsState(initial = "")
-    val correctLogin : Boolean by viewModel.correctLogin.observeAsState(initial = true)
+    val email: String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LifeData del viewModel
+    val password: String by viewModel.password.observeAsState(initial = "")
+    val correctLogin: Boolean by viewModel.correctLogin.observeAsState(initial = true)
+
+    val isBtnLoginEnabled by viewModel.isBtnLoginEnabled.observeAsState(initial = false)
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) //para hacer scroll al rotar la pantalla
     {
@@ -83,8 +87,10 @@ fun Login(navController: NavController, modifier: Modifier, viewModel: LoginView
 
         Column(modifier = Modifier.fillMaxSize())
         {
-            Text(text = stringResource(R.string.login),
-                modifier = Modifier.padding(24.dp)
+            Text(
+                text = stringResource(R.string.login),
+                modifier = Modifier
+                    .padding(24.dp)
                     .align(alignment = Alignment.CenterHorizontally),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -92,23 +98,30 @@ fun Login(navController: NavController, modifier: Modifier, viewModel: LoginView
 
                 )
 
-            EmailField(email) {viewModel.onLoginChanged(it, password)}
+            EmailField(email) { viewModel.onLoginChanged(it, password) }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            PasswordField(password) {viewModel.onLoginChanged(email, it)}
+            PasswordField(password) { viewModel.onLoginChanged(email, it) }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            ForgotPassword(navController = navController, modifier = Modifier.align(Alignment.CenterHorizontally))
+            ForgotPassword(
+                navController = navController,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            BtnLogin(correctLogin) {viewModel.onLoginSelected{
-                navController.navigate("reserve")
-            }}
-            if (!correctLogin){
-                Text(text = stringResource(R.string.msj_error),
+            BtnLogin(enabled = isBtnLoginEnabled)
+            {
+                viewModel.onLoginSelected {
+                    navController.navigate("reserve")
+                }
+            }
+            if (!correctLogin) {
+                Text(
+                    text = stringResource(R.string.msj_error),
                     color = Color.Red,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -122,19 +135,22 @@ fun Login(navController: NavController, modifier: Modifier, viewModel: LoginView
 
 @Composable
 fun ForgotPassword(navController: NavController, modifier: Modifier) {
-    Text(text = stringResource(R.string.forgot_password),
+    Text(
+        text = stringResource(R.string.forgot_password),
         modifier = modifier.clickable {
             navController.navigate("resetPassword")
         },
         fontSize = 16.sp,
         fontWeight = FontWeight.Bold,
         fontStyle = FontStyle.Italic,
-        color = Color.Gray)
+        color = Color.Gray
+    )
 }
 
 @Composable
-fun BtnLogin(correctLogin: Boolean, onLoginSelected: () -> Unit) {
-    Button(onClick = { onLoginSelected()},
+fun BtnLogin(enabled: Boolean, onLoginSelected: () -> Unit) {
+    Button(
+        onClick = { onLoginSelected() },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -143,17 +159,20 @@ fun BtnLogin(correctLogin: Boolean, onLoginSelected: () -> Unit) {
             disabledContainerColor = colorResource(R.color.btn_disable_color),
             contentColor = Color.White,
             disabledContentColor = Color.White
-            ),
-        enabled = correctLogin
-    ){
-        Text(text = stringResource(R.string.btn_login))
+        ),
+        enabled = enabled
+    ) {
+        Text(
+            text = stringResource(R.string.btn_login),
+            fontSize = 20.sp
+        )
 
     }
 
 }
 
 @Composable
-fun EmailField(email : String, onTextFieldChanged:(String) -> Unit) {
+fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
 
     OutlinedTextField(
         value = email,
@@ -185,7 +204,7 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
 
     OutlinedTextField(
         value = password,
-        onValueChange = { onTextFieldChanged (it)},
+        onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier
             .fillMaxWidth()
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),

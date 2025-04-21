@@ -12,18 +12,23 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
-    private val _email = MutableLiveData<String>()
+    private val _email = MutableLiveData("")
     val email: LiveData<String> = _email
 
-    private val _password = MutableLiveData<String>()
+    private val _password = MutableLiveData("")
     val password: LiveData<String> = _password
 
-    private val _correctLogin = MutableLiveData<Boolean>()
+    private val _correctLogin = MutableLiveData(true)
     val correctLogin: LiveData<Boolean> = _correctLogin
+
+    private val _isBtnLoginEnabled = MutableLiveData(false)
+    val isBtnLoginEnabled: LiveData<Boolean> = _isBtnLoginEnabled
 
     fun onLoginChanged(email: String, password: String) {
         _email.value = email
         _password.value = password
+        _correctLogin.value = true
+        _isBtnLoginEnabled.value = true
     }
 
     fun onLoginSelected(onLoginSucess: () -> Unit) {
@@ -35,13 +40,14 @@ class LoginViewModel : ViewModel() {
 
             viewModelScope.launch {
                 delay(2000)
-               // _correctLogin.value = false
                 onLoginSucess()
             }
         }else{
             _email.value = ""
             _password.value = ""
             _correctLogin.value = false
+            _isBtnLoginEnabled.value = false
+
         }
     }
 

@@ -70,24 +70,24 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
         {
             Image(modifier = Modifier
                 .width(200.dp)
-                .padding(top = 28.dp)
+                .padding(top = 42.dp)
                 .clip(RoundedCornerShape(16.dp)),
                 painter = painterResource(R.drawable.logo_app),
                 contentDescription = "logo",
                 contentScale = ContentScale.Fit)
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             Text(
                 stringResource(R.string.txt_reset_pasw),
                 modifier = Modifier
                     .padding(top = 24.dp, start = 24.dp)
-                    .align(alignment = Alignment.Start),
+                    .align(alignment = Alignment.CenterHorizontally),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(42.dp))
 
             OutlinedTextField(
                 value = email,
@@ -128,7 +128,8 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
                 ),
 
                 ) {
-                Text(text = stringResource(R.string.btn_reset))
+                Text(text = stringResource(R.string.btn_reset),
+                    fontSize = 20.sp)
 
             }
         }
