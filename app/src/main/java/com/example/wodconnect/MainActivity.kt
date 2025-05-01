@@ -12,12 +12,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.wodconnect.ui.theme.HomeScreen
-import com.example.wodconnect.ui.theme.LoginScreen
-import com.example.wodconnect.ui.theme.LoginViewModel
-import com.example.wodconnect.ui.theme.ReserveScreen
-import com.example.wodconnect.ui.theme.ResetPasswordScreen
+import com.example.wodconnect.view.HomeScreen
+import com.example.wodconnect.view.LoginScreen
+import com.example.wodconnect.viewModel.LoginViewModel
+import com.example.wodconnect.view.ReserveScreen
+import com.example.wodconnect.view.ResetPasswordScreen
 import com.example.wodconnect.ui.theme.WODConnectTheme
+import com.example.wodconnect.viewModel.ReserveViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +45,8 @@ class MainActivity : ComponentActivity() {
                             ResetPasswordScreen(navController = navController, modifier = Modifier)
                         }
                         composable("reserve") {
-                            ReserveScreen(navController = navController, modifier = Modifier)
+                            val viewModel: ReserveViewModel = viewModel()
+                            ReserveScreen(navController = navController, modifier = Modifier, viewModel = viewModel)
                         }
                     }
 

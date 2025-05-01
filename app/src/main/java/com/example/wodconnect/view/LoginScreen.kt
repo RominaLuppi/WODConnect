@@ -1,4 +1,4 @@
-package com.example.wodconnect.ui.theme
+package com.example.wodconnect.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,9 +42,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wodconnect.R
-import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
+import com.example.wodconnect.viewModel.LoginViewModel
 
 
 @Composable
@@ -66,7 +66,7 @@ fun LoginScreen(
 
 @Composable
 fun Login(navController: NavController, modifier: Modifier, viewModel: LoginViewModel) {
-    val email: String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LifeData del viewModel
+    val email: String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LiveData del viewModel
     val password: String by viewModel.password.observeAsState(initial = "")
     val correctLogin: Boolean by viewModel.correctLogin.observeAsState(initial = true)
 

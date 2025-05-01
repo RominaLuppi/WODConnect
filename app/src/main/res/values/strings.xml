@@ -15,4 +15,12 @@
     <string name="txt_reset_pasw">Introduce tu email para restablecer la contraseña</string>
     <string name="btn_reset">Enviar</string>
 
+    <string name="btn_reserve">Reservar</string>
+    <string name="text_plazas">plazas disponibles</string>
+
+    <string name="icon_agenda">Agenda</string>
+    <string name="icon_horario">Horarios</string>
+    <string name="icon_perfil">Perfil</string>
+
+
 </resources>
