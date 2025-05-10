@@ -1,8 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "1.9.0"
+    alias (libs.plugins.hilt.application)
+    // Habilita el procesador de anotaciones en Kotlin
+    id("com.google.devtools.ksp")
+    id ("kotlin-android")
+    id ("kotlin-kapt") // Necesario para la anotación @Inject
 
 }
 
@@ -12,12 +18,13 @@ android {
 
     defaultConfig {
         applicationId = "com.example.wodconnect"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -38,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+
     }
 }
 
@@ -47,32 +55,52 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.ui)
+    implementation (libs.androidx.navigation.compose)
+    implementation (libs.androidx.ui.v140)
+    implementation (libs.androidx.material3.v100)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.jakewharton.threetenabp)
+
+
+    implementation (libs.androidx.runtime.livedata)
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    //Supabase
-   /* implementation(platform(libs.bom))
-    implementation(libs.postgrest.kt) // Para consultas a la BD
-    implementation(libs.auth.kt)
-    implementation(libs.realtime.kt)
-   // implementation(libs.gotrue.kt) // Para autenticación
-   // implementation(libs.ktor.ktor.client.engine.z)
-    //ktor
-    implementation(libs.ktor.client.engine.z)**/
 
+    implementation (libs.androidx.material3.v121)
+    implementation(libs.ui.tooling)
+    implementation(libs.androidx.foundation)
 
+    implementation (libs.kotlin.stdlib)
 
-    // ViewModel
+    // Retrofit
+    implementation(libs.retrofit)
+    // Retrofit with Scalar Converter
+    implementation(libs.converter.scalars)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit.v290)
+    implementation(libs.kotlinx.serialization.json)  // Agrega la dependencia de Kotlinx Serialization
+    implementation(libs.retrofit2.kotlinx.serialization.converter.v080)  // Convertidor de Kotlinx para Retrofit
+    implementation(libs.okhttp)
+    //Retromock
+    implementation (libs.retromock)
+
+    //Room
+    implementation(libs.androidx.room.runtime)
+    // Procesador de anotaciones para Room
+    ksp(libs.androidx.room.compiler)
+    //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    // LiveData
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.play.services.auth)
-    implementation(libs.androidx.runtime.livedata)
-    implementation (libs.jakewharton.threetenabp)
+
+    //hilt
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.android.compiler)
+    implementation (libs.hilt.navigation.compose)
+
 
 
 

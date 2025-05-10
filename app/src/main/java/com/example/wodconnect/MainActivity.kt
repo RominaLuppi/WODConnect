@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,39 +21,59 @@ import com.example.wodconnect.view.ReserveScreen
 import com.example.wodconnect.view.ResetPasswordScreen
 import com.example.wodconnect.ui.theme.WODConnectTheme
 import com.example.wodconnect.viewModel.ReserveViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WODConnectTheme {
-                val navController = rememberNavController()
-
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ){
-                    NavHost(navController = navController, startDestination = "home"){
-                        composable("home") {
-                            HomeScreen(navController = navController)
-                        }
-                        composable("login") {
-                            val viewModel: LoginViewModel = viewModel()
-                            LoginScreen(navController = navController, viewModel = viewModel)
-                        }
-                        composable("resetPassword") {
-                            ResetPasswordScreen(navController = navController, modifier = Modifier)
-                        }
-                        composable("reserve") {
-                            val viewModel: ReserveViewModel = viewModel()
-                            ReserveScreen(navController = navController, modifier = Modifier, viewModel = viewModel)
-                        }
-                    }
-
-                }
+                mainNavigation()
             }
         }
     }
 }
+
+@Composable
+private fun mainNavigation() {
+    val navController = rememberNavController()
+    val loginViewModel: LoginViewModel = viewModel()
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = "HomeScreen"
+        )
+        {
+            composable("HomeScreen")
+            {
+                HomeScreen(navController = navController)
+            }
+            composable("LoginScreen") {
+                val loginViewModel: LoginViewModel = hiltViewModel()
+                LoginScreen(
+                    navController = navController,
+                    loginViewModel = loginViewModel
+                )
+            }
+            composable("ResetPasswordScreen") {
+                ResetPasswordScreen(navController = navController, modifier = Modifier)
+            }
+            composable("ReserveScreen") {
+                val viewModel: ReserveViewModel = hiltViewModel()
+                ReserveScreen(
+                    navController = navController,
+                    modifier = Modifier,
+                    reserveViewModel = viewModel
+                )
+            }
+        }
+
+    }
+}
+

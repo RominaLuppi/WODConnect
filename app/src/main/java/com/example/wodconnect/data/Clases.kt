@@ -1,8 +1,7 @@
 package com.example.wodconnect.data
 
-
-data class Class(
-    val id: Int, //en la BD es serial, en koltlin es Int
+data class Clases(
+    val id: Int,
     val name: String,
     val description: String?,
     val startTime: String?,

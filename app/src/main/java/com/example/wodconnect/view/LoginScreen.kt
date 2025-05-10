@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -43,16 +44,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wodconnect.R
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.viewModel.LoginViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel
 ) {
+
     Box(
         Modifier
             .fillMaxSize()
@@ -60,12 +64,17 @@ fun LoginScreen(
             .padding(16.dp)
             .focusable()
     ) {
-        Login(navController = navController, modifier = Modifier.fillMaxSize(), viewModel)
+        Login(navController = navController,
+            modifier = Modifier.fillMaxSize(),
+            viewModel = loginViewModel
+            )
     }
 }
 
 @Composable
-fun Login(navController: NavController, modifier: Modifier, viewModel: LoginViewModel) {
+fun Login(navController: NavController,
+          modifier: Modifier,
+          viewModel: LoginViewModel) {
     val email: String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LiveData del viewModel
     val password: String by viewModel.password.observeAsState(initial = "")
     val correctLogin: Boolean by viewModel.correctLogin.observeAsState(initial = true)
@@ -85,7 +94,8 @@ fun Login(navController: NavController, modifier: Modifier, viewModel: LoginView
         )
         Spacer(modifier = Modifier.height(30.dp))
 
-        Column(modifier = Modifier.fillMaxSize())
+        Column(modifier = Modifier.fillMaxWidth()
+            .wrapContentHeight())
         {
             Text(
                 text = stringResource(R.string.login),
@@ -115,9 +125,13 @@ fun Login(navController: NavController, modifier: Modifier, viewModel: LoginView
 
             BtnLogin(enabled = isBtnLoginEnabled)
             {
-                viewModel.onLoginSelected {
-                    navController.navigate("reserve")
-                }
+                viewModel.onLoginSelected(
+                    onLoginSucess = {
+                        navController.navigate("reserve")
+                    },
+                    onLoginError = {}
+                )
+
             }
             if (!correctLogin) {
                 Text(

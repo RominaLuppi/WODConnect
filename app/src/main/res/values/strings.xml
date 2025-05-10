@@ -22,5 +22,9 @@
     <string name="icon_horario">Horarios</string>
     <string name="icon_perfil">Perfil</string>
 
+    <string name="btn_workout">CrossFit</string>
+
+    <string name="btn_dialog">Cerrar</string>
+
 
 </resources>

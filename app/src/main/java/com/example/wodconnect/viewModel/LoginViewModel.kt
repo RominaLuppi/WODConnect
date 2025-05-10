@@ -1,16 +1,23 @@
 package com.example.wodconnect.viewModel
 
 
-import android.util.Patterns
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val supabase: SupabaseClient,
+
+): ViewModel() {
 
     private val _email = MutableLiveData("")
     val email: LiveData<String> = _email
@@ -31,7 +38,7 @@ class LoginViewModel : ViewModel() {
         _isBtnLoginEnabled.value = true
     }
 
-    fun onLoginSelected(onLoginSucess: () -> Unit) {
+    fun onLoginSelected(onLoginSucess: () -> Unit, onLoginError: () -> Unit) {
         val currentEmail = _email.value ?: ""
         val currentPassword = _password.value ?: ""
 
@@ -40,19 +47,26 @@ class LoginViewModel : ViewModel() {
 
             viewModelScope.launch {
                 delay(2000)
-                onLoginSucess()
+                val loginSuccess = authRepository.login(currentEmail, currentPassword)
+                if(loginSuccess){
+                    onLoginSucess()
+                }else{
+                    _correctLogin.value = false
+                    _isBtnLoginEnabled.value = false
+                    onLoginError()
+                }
+
             }
         }else{
             _email.value = ""
             _password.value = ""
             _correctLogin.value = false
             _isBtnLoginEnabled.value = false
-
+            onLoginError()
         }
     }
 
     private fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
-
 
     private fun isValidPassword(password: String) = password.length >= 8
 

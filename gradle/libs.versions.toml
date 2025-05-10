@@ -1,40 +1,102 @@
 [versions]
-agp = "8.7.3"
-bom = "3.1.4"
-#bomVersion = "3.1.4"
-#gotrueKt = "3.1.4"
-ktorClientEngine_z = "3.1.1"
-ktorVersion = "3.1.1"
-auth-kt = "3.1.4"
-kotlin = "2.1.20"
+accompanistPager = "0.32.0"
+agp = "8.7.2"
+androidxComposeMaterial3Material3 = "1.1.0"
+androidxMaterial3 = "1.0.0"
+androidxMaterial3Version = "1.2.1"
+androidxUi = "1.4.0"
+bom = "3.2.0"
+converterScalars = "2.9.0"
+foundation = "1.7.8"
+foundationVersion = "<version>"
+hiltAndroid = "2.50"
+hiltAndroidGradlePlugin = "2.50"
+hiltCompiler = "2.50"
+hiltVersion = "2.51.1"
+hiltNavigationVersion = "1.2.0"
+hiltNavigationCompose = "1.2.0"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-#ktorClientEngine = "okhttp"
-#ktorClientEngine_zVersion = "1.0.1"
+kotlinStdlib = "2.1.0"
+kotlinxSerializationJson = "1.8.0"
+ktorClientOkhttp = "2.3.9"
+lifecycleLivedataCompose = "2.6.0"
+lifecycleLivedataComposeVersion = "1.0.0-alpha01"
+lifecycleRuntimeCompose = "2.6.2"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.03.01"
+material3 = "1.3.1"
+material3Datepicker = "1.2.1"
+material3Version = "<version>"
 navigationCompose = "2.8.9"
-supabaseAndroid = "1.0.0"
-threetenabpVersion = "1.4.5"
+okhttp = "4.12.0"
+retrofit = "2.11.0"
+retrofit2KotlinxSerializationConverter = "1.0.0"
+retrofit2KotlinxSerializationConverterVersion = "1.0.0"
+retrofitVersion = "2.11.0"
+retromock = "1.1.0"
+roomCompiler = "2.6.1"
+roomCompilerVersion = "2.7.1"
+roomKtx = "2.6.1"
+roomRuntime = "2.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+jetbrainsKotlinJvm = "2.1.0"
+runtimeLivedata = "1.7.8"
+squareupRetrofit = "2.9.0"
 ui = "1.7.8"
-playServicesAuth = "21.3.0"
+uiGraphics = "<version>"
+uiTooling = "<version>"
+uiToolingPreview = "1.7.8"
+uiToolingPreviewVersion = "<version>"
+uiVersion = "<version>"
+threetenabpVersion = "1.4.5"
+supabase = "3.1.4"
 
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-foundation-vversion = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-room-compiler-v271 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
 bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "bom" }
-#noinspection SimilarGradleDependency
-#bom-v314 = { module = "io.github.jan-tennert.supabase:bom", version.ref = "bomVersion" }
-#gotrue-kt = { module = "io.github.jan-tennert.supabase:gotrue-kt", version.ref = "gotrueKt" }
-jakewharton-threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabpVersion" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationVersion" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltVersion" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltVersion" }
+androidx-lifecycle-livedata-compose = { module = "androidx.lifecycle:lifecycle-livedata-compose", version.ref = "lifecycleLivedataCompose" }
+androidx-lifecycle-livedata-compose-v100alpha01 = { module = "androidx.lifecycle:lifecycle-livedata-compose", version.ref = "lifecycleLivedataComposeVersion" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-compose-v262 = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleLivedataCompose" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-material = { module = "androidx.compose.material:material" }
+androidx-material3-datepicker = { module = "androidx.compose.material3:material3-datepicker", version.ref = "material3Datepicker" }
+androidx-material3-v100 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3" }
+androidx-material3-v110 = { module = "androidx.compose.material3:material3", version.ref = "androidxComposeMaterial3Material3" }
+androidx-material3-v121 = { module = "androidx.compose.material3:material3", version.ref = "androidxMaterial3Version" }
+androidx-material3-vversion = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomRuntime" }
+androidx-room-compiler-v250 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
+androidx-ui-tooling-preview-vversion = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreviewVersion" }
+androidx-ui-v140 = { module = "androidx.compose.ui:ui", version.ref = "androidxUi" }
+androidx-ui-vversion = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterScalars" }
+converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
+#hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -48,19 +110,39 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-#ktor-ktor-client-engine_z = { module = "io.ktor:ktor-client-[engine]", version.ref = "ktorClientEngine_zVersion" }
-ktor-client-engine_z = { module = "io.ktor:ktor-client-[engine]", version.ref = "ktorClientEngine_z" }
-ktor-client-okhttp = { module = "io.ktor.client:ktor-client-okhttp", version.ref = "ktorVersion" }
-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "auth-kt" }
-realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "auth-kt" }
-#supabase-android = { module = "io.supabase:supabase-android", version.ref = "supabaseAndroid" }
-#supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
-#supabase-realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
+realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-v290 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
+retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
+retrofit2-kotlinx-serialization-converter-v080 = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverterVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+retrofit2-retrofit-v290 = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareupRetrofit" }
+retromock = { module = "co.infinum:retromock", version.ref = "retromock" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiGraphics" }
+ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
+ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+jakewharton-threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabpVersion" }
+supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase" }
+supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt", version.ref = "supabase" }
+supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
+supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt", version.ref = "supabase" }
+supabase-storage = { group = "io.github.jan-tennert.supabase", name = "storage-kt", version.ref = "supabase" }
+ktor-client-timeout = "io.ktor:ktor-client-plugins:2.3.8"
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+hilt-application = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 
