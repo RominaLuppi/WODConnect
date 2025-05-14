@@ -14,4 +14,7 @@ interface CrossfitApiService {
     //obtener un entrenamiento por su Id
     @GET("workouts/{workoutId}")
     suspend fun getWorkoutById(@Path("workoutId") workoutId: String): Response<Workout>
+
+
+
 }

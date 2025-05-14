@@ -1,6 +1,7 @@
 package com.example.wodconnect.data
 
 import com.example.wodconnect.modelo.CrossfitApiService
+import com.example.wodconnect.modelo.MockLoginApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,4 +29,14 @@ object NetworkModule {
     @Singleton
     fun provideCrossfitApiService(retrofit: Retrofit): CrossfitApiService =
         retrofit.create(CrossfitApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMockLoginApiService(): MockLoginApiService {
+        return Retrofit.Builder()
+            .baseUrl("https://run.mocky.io/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MockLoginApiService::class.java)
+    }
 }

@@ -104,7 +104,7 @@ Column(modifier = modifier.verticalScroll(rememberScrollState())
 
     Button(
         onClick = {
-            navController.navigate("login")
+            navController.navigate("LoginScreen")
         },
         modifier = Modifier
             .width(250.dp)

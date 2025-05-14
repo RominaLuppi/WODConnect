@@ -22,13 +22,19 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,12 +48,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.wodconnect.R
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.wodconnect.R
 import com.example.wodconnect.viewModel.LoginViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 @Composable
@@ -56,6 +59,15 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel
 ) {
+    val loginError by loginViewModel.loginError.observeAsState()
+    val isLoading by loginViewModel.isLoading.observeAsState(false)
+    val snackbarHostState = remember { SnackbarHostState()}
+
+    LaunchedEffect(loginError) {
+        loginError?.let {
+            snackbarHostState.showSnackbar(it)
+        }
+    }
 
     Box(
         Modifier
@@ -64,24 +76,45 @@ fun LoginScreen(
             .padding(16.dp)
             .focusable()
     ) {
-        Login(navController = navController,
+        Login(
+            navController = navController,
             modifier = Modifier.fillMaxSize(),
-            viewModel = loginViewModel
-            )
+            loginViewModel = loginViewModel
+        )
+        //para mostrar errores
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+        if (isLoading){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ){
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
     }
 }
 
 @Composable
-fun Login(navController: NavController,
-          modifier: Modifier,
-          viewModel: LoginViewModel) {
-    val email: String by viewModel.email.observeAsState(initial = "") //se engancha la vista al LiveData del viewModel
-    val password: String by viewModel.password.observeAsState(initial = "")
-    val correctLogin: Boolean by viewModel.correctLogin.observeAsState(initial = true)
+fun Login(
+    navController: NavController,
+    modifier: Modifier,
+    loginViewModel: LoginViewModel
+) {
+    val email: String by loginViewModel.email.observeAsState(initial = "") //se engancha la vista al LiveData del viewModel
+    val password: String by loginViewModel.password.observeAsState(initial = "")
+    val correctLogin: Boolean by loginViewModel.correctLogin.observeAsState(initial = true)
+    val loginError: String? by loginViewModel.loginError.observeAsState()
+    val isBtnLoginEnabled by loginViewModel.isBtnLoginEnabled.observeAsState(initial = false)
 
-    val isBtnLoginEnabled by viewModel.isBtnLoginEnabled.observeAsState(initial = false)
 
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) //para hacer scroll al rotar la pantalla
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState())
+    ) //para hacer scroll al rotar la pantalla
     {
         Image(
             modifier = Modifier
@@ -94,8 +127,11 @@ fun Login(navController: NavController,
         )
         Spacer(modifier = Modifier.height(30.dp))
 
-        Column(modifier = Modifier.fillMaxWidth()
-            .wrapContentHeight())
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        )
         {
             Text(
                 text = stringResource(R.string.login),
@@ -108,11 +144,11 @@ fun Login(navController: NavController,
 
                 )
 
-            EmailField(email) { viewModel.onLoginChanged(it, password) }
+            EmailField(email) { loginViewModel.onLoginChanged(it, password) }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            PasswordField(password) { viewModel.onLoginChanged(email, it) }
+            PasswordField(password) { loginViewModel.onLoginChanged(email, it) }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -123,26 +159,17 @@ fun Login(navController: NavController,
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            BtnLogin(enabled = isBtnLoginEnabled)
-            {
-                viewModel.onLoginSelected(
+            BtnLogin(enabled = isBtnLoginEnabled) {
+                loginViewModel.onLoginSelected(
                     onLoginSucess = {
-                        navController.navigate("reserve")
+                        navController.navigate("ReserveScreen")
                     },
-                    onLoginError = {}
-                )
-
-            }
-            if (!correctLogin) {
-                Text(
-                    text = stringResource(R.string.msj_error),
-                    color = Color.Red,
-                    modifier = Modifier.padding(8.dp)
+                    onLoginError = { errorMessage ->
+                        loginViewModel._loginError.value = errorMessage
+                    }
                 )
             }
-
         }
-
     }
 
 }
@@ -162,7 +189,10 @@ fun ForgotPassword(navController: NavController, modifier: Modifier) {
 }
 
 @Composable
-fun BtnLogin(enabled: Boolean, onLoginSelected: () -> Unit) {
+fun BtnLogin(
+    enabled: Boolean,
+    onLoginSelected: () -> Unit
+) {
     Button(
         onClick = { onLoginSelected() },
         modifier = Modifier
