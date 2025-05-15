@@ -9,7 +9,9 @@
 
 
     <string name="home_text">"Tu siguiente entrenamiento comienza aquí" </string>
-    <string name="home_btn">Empezar </string>
+    <string name="btn_registrar">Registrarse</string>
+    <string name="btn_google">Continuar con Google</string>
+    <string name="btn_facebook">Continuar con Facebook</string>
 
 
     <string name="txt_reset_pasw">Introduce tu email para restablecer la contraseña</string>

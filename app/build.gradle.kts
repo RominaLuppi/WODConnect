@@ -9,6 +9,8 @@ plugins {
     id("com.google.devtools.ksp")
     id ("kotlin-android")
     id ("kotlin-kapt") // Necesario para la anotación @Inject
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.crashlytics)
 
 }
 
@@ -101,6 +103,10 @@ dependencies {
     kapt (libs.hilt.android.compiler)
     implementation (libs.hilt.navigation.compose)
 
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
 
 
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "51804650720",
+    "project_id": "wodconnect-b2389",
+    "storage_bucket": "wodconnect-b2389.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51804650720:android:4686bfc1fcd65fcde3e485",
+        "android_client_info": {
+          "package_name": "com.example.wodconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzCLohe5qlB8DtGnsKFR9GYINZclsKC6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

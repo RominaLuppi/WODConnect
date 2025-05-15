@@ -55,7 +55,11 @@ uiToolingPreview = "1.7.8"
 uiToolingPreviewVersion = "<version>"
 uiVersion = "<version>"
 threetenabpVersion = "1.4.5"
-supabase = "3.1.4"
+
+firebaseBom = "33.1.1"
+services = "4.4.2"
+crashlytics = "3.0.2"
+
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -64,8 +68,7 @@ androidx-foundation = { module = "androidx.compose.foundation:foundation", versi
 androidx-foundation-vversion = { module = "androidx.compose.foundation:foundation", version.ref = "foundationVersion" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-room-compiler-v271 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
-auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "bom" }
+
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationVersion" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltVersion" }
@@ -130,12 +133,10 @@ ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiGra
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 jakewharton-threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabpVersion" }
-supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase" }
-supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt", version.ref = "supabase" }
-supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
-supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt", version.ref = "supabase" }
-supabase-storage = { group = "io.github.jan-tennert.supabase", name = "storage-kt", version.ref = "supabase" }
-ktor-client-timeout = "io.ktor:ktor-client-plugins:2.3.8"
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = {module = "com.google.firebase:firebase-crashlytics" }
+firebase-auth = {module = "com.google.firebase:firebase-auth-ktx" }
+
 
 
 [plugins]
@@ -145,4 +146,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 hilt-application = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
-
+googleServices = { id = "com.google.gms.google-services", version.ref = "services"}
+crashlytics = {id= "com.google.firebase.crashlytics", version.ref = "crashlytics"}
