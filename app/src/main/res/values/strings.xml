@@ -14,6 +14,8 @@
     <string name="btn_facebook">Continuar con Facebook</string>
 
 
+    <string name="text_logo">Logo Aplicación</string>
+
     <string name="txt_reset_pasw">Introduce tu email para restablecer la contraseña</string>
     <string name="btn_reset">Enviar</string>
 

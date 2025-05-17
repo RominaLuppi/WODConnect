@@ -8,8 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="background_screen">#ddf1f4</color>
+    <color name="background_screen">#ADAFAF</color>
     <color name="btn_color">#1698AD</color>
+
     <color name="btn_disable_color">#89A6A8</color>
     <color name="item_color">#94E8ED</color>
     <color name="background_card">#c4e6eb</color>

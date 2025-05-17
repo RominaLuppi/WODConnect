@@ -30,14 +30,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WODConnectTheme {
-                mainNavigation()
+                MainNavigation()
             }
         }
     }
 }
 
 @Composable
-private fun mainNavigation() {
+private fun MainNavigation() {
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
 
@@ -73,7 +73,6 @@ private fun mainNavigation() {
                 )
             }
         }
-
     }
 }
 

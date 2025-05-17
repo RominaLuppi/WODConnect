@@ -53,17 +53,11 @@ import com.example.wodconnect.ui.theme.ShapeButton
 @Composable
 fun HomeScreen(navController: NavController,
                modifier: Modifier = Modifier) {
-
     Box(modifier = Modifier.fillMaxSize()
     ) {
-
-        Home(
-            modifier = Modifier.fillMaxSize(),
-            navController = navController
-
-        )
+        Home(modifier = Modifier.fillMaxSize(),
+            navController = navController)
     }
-
 }
 
 @Composable
@@ -72,7 +66,7 @@ Column(modifier = modifier
     .verticalScroll(rememberScrollState())
     .fillMaxSize()
     .background(Brush.verticalGradient(listOf(Color.Gray, Color.Black),
-        startY = 0f, endY = 850f))
+        startY = 0f, endY = 1350f))
     .padding(16.dp),
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally)
@@ -81,7 +75,7 @@ Column(modifier = modifier
     Image(
         painter = painterResource(R.drawable.dumbel),
         modifier = Modifier
-            .padding(top = 32.dp)
+            .padding(top = 54.dp)
             .clip(CircleShape)
             .size(200.dp),
         contentDescription = "",
@@ -149,6 +143,7 @@ Column(modifier = modifier
     Spacer(modifier = Modifier.weight(1f))
 }
 }
+//se define el estilo de los botones para reutilizar la funcion
 @Composable
 fun CustomButton(modifier: Modifier, painter: Painter, title: String) {
     Box(

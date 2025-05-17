@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,24 +23,26 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.viewModel.LoginViewModel
@@ -56,46 +60,40 @@ import com.example.wodconnect.viewModel.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    val loginError by loginViewModel.loginError.observeAsState()
+    val context = LocalContext.current
+    val user by loginViewModel.user.observeAsState()
     val isLoading by loginViewModel.isLoading.observeAsState(false)
-    val snackbarHostState = remember { SnackbarHostState()}
+    val errorMessage by loginViewModel.errorMessage.observeAsState()
 
-    LaunchedEffect(loginError) {
-        loginError?.let {
-            snackbarHostState.showSnackbar(it)
+    val email by loginViewModel.email.observeAsState("")
+    val password by loginViewModel.password.observeAsState("")
+
+    //si el User no es null se navega a la pantalla HomeScreen
+    LaunchedEffect(user) {
+        user?.let{
+            navController.navigate("ReserveScreen"){
+                popUpTo("LoginScreen") { inclusive = true} //elimina la pantalla de login del backstack. Si el usuario pulsa "atrás" no regresa al login.
+            }
         }
     }
 
     Box(
         Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.background_screen))
+            .background(Color.Black)
             .padding(16.dp)
             .focusable()
     ) {
         Login(
             navController = navController,
             modifier = Modifier.fillMaxSize(),
-            loginViewModel = loginViewModel
+            loginViewModel = loginViewModel,
+            email = email,
+            password = password
         )
-        //para mostrar errores
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
-        if (isLoading){
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f)),
-                contentAlignment = Alignment.Center
-            ){
-                CircularProgressIndicator(color = Color.White)
-            }
-        }
+
     }
 }
 
@@ -103,75 +101,66 @@ fun LoginScreen(
 fun Login(
     navController: NavController,
     modifier: Modifier,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    email: String,
+    password: String
 ) {
-    val email: String by loginViewModel.email.observeAsState(initial = "") //se engancha la vista al LiveData del viewModel
-    val password: String by loginViewModel.password.observeAsState(initial = "")
-    val correctLogin: Boolean by loginViewModel.correctLogin.observeAsState(initial = true)
-    val loginError: String? by loginViewModel.loginError.observeAsState()
-    val isBtnLoginEnabled by loginViewModel.isBtnLoginEnabled.observeAsState(initial = false)
-
 
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
-    ) //para hacer scroll al rotar la pantalla
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
     {
+        Spacer(modifier = Modifier.height(24.dp))
         Image(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 18.dp)
                 .clip(RoundedCornerShape(16.dp)),
-            painter = painterResource(R.drawable.logo_app),
-            contentDescription = "logo",
+            painter = painterResource(R.drawable.logo_wodconnect),
+            contentDescription = stringResource(R.string.text_logo),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.height(30.dp))
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-        )
-        {
+        Spacer(modifier = Modifier.weight(1f))
+
             Text(
                 text = stringResource(R.string.login),
                 modifier = Modifier
-                    .padding(24.dp)
+//                    .padding(24.dp)
                     .align(alignment = Alignment.CenterHorizontally),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
 
                 )
+        Spacer(modifier = Modifier.weight(1f))
+            EmailField(email = email, onTextFieldChanged = {loginViewModel.onEmailChanged(it)})
 
-            EmailField(email) { loginViewModel.onLoginChanged(it, password) }
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
+            PasswordField(password = password, onTextFieldChanged = { loginViewModel.onPasswordChanged(it) })
 
-            PasswordField(password) { loginViewModel.onLoginChanged(email, it) }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
+        Spacer(modifier = Modifier.weight(1f))
             ForgotPassword(
                 navController = navController,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
+            BtnLogin(
+                loginViewModel = loginViewModel,
+                email = email,
+                password = password
+            )
+        Spacer(modifier = Modifier.weight(1f))
 
-            BtnLogin(enabled = isBtnLoginEnabled) {
-                loginViewModel.onLoginSelected(
-                    onLoginSucess = {
-                        navController.navigate("ReserveScreen")
-                    },
-                    onLoginError = { errorMessage ->
-                        loginViewModel._loginError.value = errorMessage
-                    }
-                )
-            }
         }
-    }
-
 }
 
 @Composable
@@ -179,7 +168,7 @@ fun ForgotPassword(navController: NavController, modifier: Modifier) {
     Text(
         text = stringResource(R.string.forgot_password),
         modifier = modifier.clickable {
-            navController.navigate("resetPassword")
+            navController.navigate("ResetPasswordScreen")
         },
         fontSize = 16.sp,
         fontWeight = FontWeight.Bold,
@@ -190,11 +179,12 @@ fun ForgotPassword(navController: NavController, modifier: Modifier) {
 
 @Composable
 fun BtnLogin(
-    enabled: Boolean,
-    onLoginSelected: () -> Unit
+    loginViewModel: LoginViewModel,
+    email: String,
+    password: String
 ) {
     Button(
-        onClick = { onLoginSelected() },
+        onClick = { loginViewModel.login(email, password)},
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -204,7 +194,7 @@ fun BtnLogin(
             contentColor = Color.White,
             disabledContentColor = Color.White
         ),
-        enabled = enabled
+
     ) {
         Text(
             text = stringResource(R.string.btn_login),
@@ -220,14 +210,13 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
 
     OutlinedTextField(
         value = email,
-        onValueChange = { onTextFieldChanged(it) },
+        onValueChange = onTextFieldChanged,
         modifier = Modifier
             .fillMaxWidth()
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
         placeholder = { Text(stringResource(R.string.email)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         singleLine = true,
-        maxLines = 1,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Email,
@@ -235,8 +224,8 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
             )
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = colorResource(R.color.background_screen),
-            unfocusedContainerColor = colorResource(R.color.background_screen),
+            focusedContainerColor = Color.LightGray,
+            unfocusedContainerColor = Color.LightGray,
             focusedLabelColor = Color.Gray,
             unfocusedLabelColor = Color.Gray
         )
@@ -263,8 +252,8 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
             )
         },
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = colorResource(R.color.background_screen),
-            unfocusedContainerColor = colorResource(R.color.background_screen),
+            focusedContainerColor = Color.LightGray,
+            unfocusedContainerColor = Color.LightGray,
             focusedLabelColor = Color.Gray,
             unfocusedLabelColor = Color.Gray
         )
