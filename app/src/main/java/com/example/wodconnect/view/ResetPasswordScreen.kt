@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,15 +56,15 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.background_screen))
-            .padding(24.dp)
+            .background(Color.Black)
+            .padding(16.dp)
             .focusable()
     ) {
         Column(
             modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .align(Alignment.TopCenter)
+                .fillMaxSize()
                 .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {
@@ -74,23 +76,23 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
                 contentDescription = "logo",
                 contentScale = ContentScale.Fit)
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(42.dp))
 
             Text(
                 stringResource(R.string.txt_reset_pasw),
                 modifier = Modifier
-                    .padding(top = 24.dp, start = 24.dp)
                     .align(alignment = Alignment.CenterHorizontally),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.White
             )
-            Spacer(modifier = Modifier.height(42.dp))
 
+            Spacer(modifier = Modifier.height(28.dp))
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 singleLine = true,
+                placeholder = { Text(stringResource(R.string.email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 leadingIcon = {
                     Icon(
@@ -103,13 +105,13 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
                     .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
 
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.background_screen),
-                    unfocusedContainerColor = colorResource(R.color.background_screen),
+                    focusedContainerColor = Color.LightGray,
+                    unfocusedContainerColor = Color.LightGray,
                     focusedLabelColor = Color.Gray,
                     unfocusedLabelColor = Color.Gray
                 )
             )
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             Button(
                 onClick = { //hacer logica boton y comprobar campo email es correcto.

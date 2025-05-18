@@ -12,18 +12,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,15 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -72,29 +69,23 @@ fun LoginScreen(
 
     //si el User no es null se navega a la pantalla HomeScreen
     LaunchedEffect(user) {
-        user?.let{
-            navController.navigate("ReserveScreen"){
-                popUpTo("LoginScreen") { inclusive = true} //elimina la pantalla de login del backstack. Si el usuario pulsa "atrás" no regresa al login.
+        user?.let {
+            navController.navigate("ReserveScreen") {
+                popUpTo("LoginScreen") {
+                    inclusive = true
+                } //elimina la pantalla de login del backstack. Si el usuario pulsa "atrás" no regresa al login.
             }
         }
     }
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(16.dp)
-            .focusable()
-    ) {
-        Login(
-            navController = navController,
-            modifier = Modifier.fillMaxSize(),
-            loginViewModel = loginViewModel,
-            email = email,
-            password = password
-        )
-
-    }
+    Login(
+        navController = navController,
+        modifier = Modifier.fillMaxSize(),
+        loginViewModel = loginViewModel,
+        email = email,
+        password = password
+    )
+//    }
 }
 
 @Composable
@@ -105,62 +96,90 @@ fun Login(
     email: String,
     password: String
 ) {
-
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color.Black)
+            .padding(16.dp)
+            .focusable()
     )
     {
-        Spacer(modifier = Modifier.height(24.dp))
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 18.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            painter = painterResource(R.drawable.logo_wodconnect),
-            contentDescription = stringResource(R.string.text_logo),
-            contentScale = ContentScale.Crop
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         )
+        {
+            Spacer(modifier = Modifier.height(54.dp))
 
-        Spacer(modifier = Modifier.weight(1f))
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 300.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                painter = painterResource(R.drawable.logo_wodconnect),
+                contentDescription = stringResource(R.string.text_logo),
+                contentScale = ContentScale.Fit
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Text(
                 text = stringResource(R.string.login),
                 modifier = Modifier
-//                    .padding(24.dp)
                     .align(alignment = Alignment.CenterHorizontally),
-                fontSize = 20.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = Color.White,
 
                 )
-        Spacer(modifier = Modifier.weight(1f))
-            EmailField(email = email, onTextFieldChanged = {loginViewModel.onEmailChanged(it)})
+            Spacer(modifier = Modifier.weight(1f))
+            EmailField(email = email, onTextFieldChanged = { loginViewModel.onEmailChanged(it) })
 
 
-        Spacer(modifier = Modifier.weight(1f))
-            PasswordField(password = password, onTextFieldChanged = { loginViewModel.onPasswordChanged(it) })
+            Spacer(modifier = Modifier.weight(1f))
+            PasswordField(
+                password = password,
+                onTextFieldChanged = { loginViewModel.onPasswordChanged(it) })
 
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
             ForgotPassword(
                 navController = navController,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
             BtnLogin(
                 loginViewModel = loginViewModel,
                 email = email,
                 password = password
             )
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
         }
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(4.dp),
+            onClick = {
+                navController.navigate("HomeScreen") {
+                    popUpTo("LoginScreen") { inclusive = true }
+                }
+            }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.text_icon_btn),
+                tint = Color.White
+
+            )
+
+        }
+    }
+
 }
 
 @Composable
@@ -184,7 +203,7 @@ fun BtnLogin(
     password: String
 ) {
     Button(
-        onClick = { loginViewModel.login(email, password)},
+        onClick = { loginViewModel.login(email, password) },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -195,7 +214,7 @@ fun BtnLogin(
             disabledContentColor = Color.White
         ),
 
-    ) {
+        ) {
         Text(
             text = stringResource(R.string.btn_login),
             fontSize = 20.sp

@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextGeometricTransform
@@ -69,16 +70,24 @@ fun ReserveScreen(
     reserveViewModel: ReserveViewModel = hiltViewModel()
 ) {
     Scaffold(
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController) },
+        containerColor = Color.Black
     ) { innerPadding ->
         Box(
             Modifier
                 .fillMaxSize()
-                .background(colorResource(R.color.background_screen))
+                .background(Color.Black)
                 .padding(innerPadding)
                 .focusable()
         ) {
             Column(modifier = Modifier.padding(top = 16.dp)) {
+                Text(text = stringResource(R.string.title_reservas),
+                    modifier = Modifier.padding(16.dp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineMedium)
+
+                Spacer(modifier.height(24.dp))
+
                 Reserve(
                     navController = navController,
                     modifier = Modifier.fillMaxSize(),
@@ -94,10 +103,10 @@ fun ReserveScreen(
 fun BottomBar(navController: NavController) {
     Surface(
         tonalElevation = 4.dp,
-        color = colorResource(R.color.background_screen),
+        color = Color.Black,
         modifier = Modifier
             .fillMaxWidth()
-            .height(54.dp)
+            .height(64.dp)
     ) {
         Row(
             modifier = Modifier
@@ -106,52 +115,49 @@ fun BottomBar(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { navController.navigate("agenda") },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.calendar),
-                    contentDescription = stringResource(R.string.icon_agenda),
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = stringResource(R.string.icon_agenda),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
+            BottomBarItem(
+                iconRes = R.drawable.calendar,
+                label = stringResource(R.string.icon_agenda),
+                onClick = { navController.navigate("Agenda") },
+            )
+            BottomBarItem(
+                iconRes = R.drawable.clock,
+                label = stringResource(R.string.icon_horario),
+                onClick = { navController.navigate("Horarios") },
+            )
+            BottomBarItem(
+                iconRes = R.drawable.user,
+                label = stringResource(R.string.icon_perfil),
+                onClick = { navController.navigate("Perfil") },
 
-            IconButton(
-                onClick = { navController.navigate("horarios") },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.clock),
-                    contentDescription = stringResource(R.string.icon_horario),
-                    modifier = Modifier.size(20.dp)
                 )
-                Text(
-                    text = stringResource(R.string.icon_horario),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-
-            IconButton(
-                onClick = { navController.navigate("perfil") },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.user),
-                    contentDescription = stringResource(R.string.icon_perfil),
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = stringResource(R.string.icon_perfil),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
         }
     }
+}
+
+@Composable
+fun BottomBarItem(iconRes: Int, label: String, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(bottom = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = label,
+            modifier = Modifier.size(24.dp),
+            tint = Color.White
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White
+        )
+
+    }
+
 }
 
 @Composable
@@ -174,7 +180,9 @@ fun Reserve(navController: NavController, modifier: Modifier, reserveViewModel: 
     val selectedWorkout by workoutViewModel.selectedWorkout.observeAsState()
 
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     )
@@ -184,16 +192,15 @@ fun Reserve(navController: NavController, modifier: Modifier, reserveViewModel: 
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(colorResource(R.color.background_screen))
+                    .background(Color.Black)
                     .padding(4.dp)
             ) {
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .background(Color.Black),
                     verticalAlignment = Alignment.CenterVertically,
                     userScrollEnabled = true,
-
                     ) {
                     itemsIndexed(daysOfWeek) { index, day ->
                         Box(
@@ -203,7 +210,7 @@ fun Reserve(navController: NavController, modifier: Modifier, reserveViewModel: 
                                     if (index == selectedIndex) {
                                         colorResource(R.color.btn_color)
                                     } else {
-                                        colorResource(R.color.item_fecha)
+                                        colorResource(R.color.background_card)
                                     }
                                 )
                                 .clickable { selectedIndex = index }
@@ -215,11 +222,9 @@ fun Reserve(navController: NavController, modifier: Modifier, reserveViewModel: 
                                 color = Color.Black,
                                 style = MaterialTheme.typography.bodySmall
                             )
-
                         }
                     }
                 }
-
             }
         }
         item {
@@ -302,6 +307,7 @@ fun Reserve(navController: NavController, modifier: Modifier, reserveViewModel: 
         )
     }
 }
+
 @Composable
 fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
     Card(
@@ -321,7 +327,8 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
             {
                 Text(
                     text = clase.name,
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "${clase.startTime} - ${clase.endTime}",
@@ -347,7 +354,8 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
                         containerColor = colorResource(R.color.btn_color)
                     )
                 ) {
-                    Text(text = stringResource(R.string.btn_reserve))
+                    Text(text = stringResource(R.string.btn_reserve),
+                        fontSize = 16.sp)
                 }
                 Text(
                     text = stringResource(R.string.text_plazas),

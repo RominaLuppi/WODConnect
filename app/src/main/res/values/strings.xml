@@ -9,12 +9,14 @@
 
 
     <string name="home_text">"Tu siguiente entrenamiento comienza aquí" </string>
-    <string name="btn_registrar">Registrarse</string>
+    <string name="btn_registrarse">Registrarse</string>
+    <string name="btn_ya_registrado">Ya estoy registrado</string>
     <string name="btn_google">Continuar con Google</string>
     <string name="btn_facebook">Continuar con Facebook</string>
 
 
     <string name="text_logo">Logo Aplicación</string>
+    <string name="text_icon_btn">Volver</string>
 
     <string name="txt_reset_pasw">Introduce tu email para restablecer la contraseña</string>
     <string name="btn_reset">Enviar</string>
@@ -22,6 +24,7 @@
     <string name="btn_reserve">Reservar</string>
     <string name="text_plazas">plazas disponibles</string>
 
+    <string name="title_reservas">Reservas</string>
     <string name="icon_agenda">Agenda</string>
     <string name="icon_horario">Horarios</string>
     <string name="icon_perfil">Perfil</string>
@@ -29,6 +32,8 @@
     <string name="btn_workout">CrossFit</string>
 
     <string name="btn_dialog">Cerrar</string>
+
+
 
 
 </resources>

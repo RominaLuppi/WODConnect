@@ -116,7 +116,7 @@ Column(modifier = modifier
             contentColor = Color.White,
         )
     ) {
-        Text(text = stringResource(R.string.btn_registrar),
+        Text(text = stringResource(R.string.btn_registrarse),
             color = Color.White,
             fontSize = 20.sp)
     }
@@ -133,7 +133,7 @@ Column(modifier = modifier
         stringResource(R.string.btn_facebook)
     )
     Text(
-        text = stringResource(R.string.btn_registrar),
+        text = stringResource(R.string.btn_ya_registrado),
         color = Color.White,
         modifier = Modifier
             .padding(24.dp)
