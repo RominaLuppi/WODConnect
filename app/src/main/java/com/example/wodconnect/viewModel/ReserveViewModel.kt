@@ -3,69 +3,118 @@ package com.example.wodconnect.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.data.getDaysOfWeek
-import com.example.wodconnect.modelo.Workout
-import com.example.wodconnect.modelo.WorkoutRepository
+import com.example.wodconnect.data.toLocalDate
+import com.example.wodconnect.modelo.repositories.ClasesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.TextStyle
-import java.util.Locale
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 
-class ReserveViewModel @Inject constructor(
-    private val workoutRepository: WorkoutRepository
+class   ReserveViewModel @Inject constructor(
+    private val clasesRepository: ClasesRepository
 ): ViewModel() {
+
+    private val _allClases = MutableLiveData<List<Clases>>()
+    val allClases: LiveData<List<Clases>> = _allClases
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    private val _clasesPorDia = MutableLiveData<List<Clases>>()
+    val clasesPorDia: LiveData<List<Clases>> = _clasesPorDia
+
+    init {
+        val today = LocalDate.now()
+        obtenerClases()
+        obtenerClasesPorDia(today)
+    }
+
+    private fun obtenerClases() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                _allClases.value = clasesRepository.obtenerClases()
+                _errorMessage.value = null
+            } catch (e: Exception){
+                _errorMessage.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    //se obtienen las clases por día desde Firestore
+    fun obtenerClasesPorDia(selectedDay: LocalDate){
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+               val allClases = clasesRepository.obtenerClases()
+                _clasesPorDia.value = allClases.filter {
+                    it.startTime?.toLocalDate() == selectedDay
+                }
+                _errorMessage.value = null
+            } catch (e: Exception){
+                _errorMessage.value = "Error al obtener las clases"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 
     val daysOfWeek = getDaysOfWeek()
 
-    private val _clases = MutableLiveData(
-        listOf(
-            Clases(1, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
-            Clases(2, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
-            Clases(3, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
-            Clases(4, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
-            Clases(5, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Lunes"),
-            Clases(6, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Miércoles"),
-            Clases(7, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
-            Clases(8, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
-            Clases(9, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
-            Clases(10, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
-            Clases(11, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Martes"),
-            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
-            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Sábado"),
-            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
-            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
-            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo"),
-            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
-            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Jueves"),
-            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo")
-        )
-    )
+//    private val _clases = MutableLiveData(
+//        listOf(
+//            Clases(1, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
+//            Clases(2, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
+//            Clases(3, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
+//            Clases(4, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
+//            Clases(5, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Lunes"),
+//            Clases(6, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Miércoles"),
+//            Clases(7, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
+//            Clases(8, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
+//            Clases(9, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
+//            Clases(10, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
+//            Clases(11, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Martes"),
+//            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
+//            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Sábado"),
+//            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
+//            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
+//            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
+//            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo"),
+//            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
+//            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Jueves"),
+//            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
+//            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
+//            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
+//            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo")
+//        )
+//    )
 
-    private val _clasesForSelectedDay =MutableLiveData<List<Clases>>()
-    val clasesForSelectedDay: LiveData<List<Clases>> = _clasesForSelectedDay
-
-
-    init {
-        setClasesForSelectedDay(LocalDate.now())
-    }
-
-    fun setClasesForSelectedDay(fecha: LocalDate){
-        val dayOfWeek = fecha.dayOfWeek.getDisplayName(TextStyle.FULL,
-            Locale("es")).lowercase()
-        _clasesForSelectedDay.value = _clases.value?.filter { it.weekDay?.lowercase() == dayOfWeek } ?: emptyList()
-
-    }
-
-    fun reserverClass(selectedClass: Clases) {
-
-    }
+//    private val _clasesForSelectedDay =MutableLiveData<List<Clases>>()
+//    val clasesForSelectedDay: LiveData<List<Clases>> = _clasesForSelectedDay
+//
+//
+//    init {
+//        setClasesForSelectedDay(LocalDate.now())
+//    }
+//
+//    fun setClasesForSelectedDay(fecha: LocalDate){
+//        val dayOfWeek = fecha.dayOfWeek.getDisplayName(TextStyle.FULL,
+//            Locale("es")).lowercase()
+//        _clasesForSelectedDay.value = _clases.value?.filter { it.weekDay?.lowercase() == dayOfWeek } ?: emptyList()
+//
+//    }
+//
+//    fun reserverClass(selectedClass: Clases) {
+//
+//    }
 
 }

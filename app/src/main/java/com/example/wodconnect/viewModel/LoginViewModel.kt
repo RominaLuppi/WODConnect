@@ -6,14 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wodconnect.data.User
-import com.example.wodconnect.modelo.AuthRepository
+import com.example.wodconnect.modelo.repositories.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-//    private val mockLoginApi: MockLoginApiService
     private val authRepository: AuthRepository
 
 ) : ViewModel() {

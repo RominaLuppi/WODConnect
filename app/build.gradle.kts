@@ -63,7 +63,7 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.jakewharton.threetenabp)
+//    implementation(libs.jakewharton.threetenabp)
 
 
     implementation (libs.androidx.runtime.livedata)
@@ -107,7 +107,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
-
+    implementation(libs.firebase.firestore)
 
 
 

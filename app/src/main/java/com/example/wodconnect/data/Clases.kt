@@ -1,11 +1,12 @@
 package com.example.wodconnect.data
 
+import com.google.firebase.Timestamp
+
 data class Clases(
-    val id: Int,
-    val name: String,
-    val description: String?,
-    val startTime: String?,
-    val endTime: String?,
-    val weekDay: String?,
+    val id: String = "",
+    val name: String = "",
+    val description: String = "" ,
+    val startTime: Timestamp? = Timestamp.now(),
+    val endTime: Timestamp? = Timestamp.now(),
     val availablePlaces: Int = 0
 )

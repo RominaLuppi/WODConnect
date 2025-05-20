@@ -1,4 +1,4 @@
-package com.example.wodconnect.modelo
+package com.example.wodconnect.modelo.repositories
 
 import com.example.wodconnect.data.User
 

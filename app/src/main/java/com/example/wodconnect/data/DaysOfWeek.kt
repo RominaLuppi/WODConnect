@@ -1,8 +1,8 @@
 package com.example.wodconnect.data
 
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.TextStyle
-import java.time.DayOfWeek
+
+import java.time.format.TextStyle
+import java.time.LocalDate
 import java.util.Locale
 
 
