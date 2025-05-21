@@ -1,5 +1,6 @@
 package com.example.wodconnect.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,9 +11,11 @@ import com.example.wodconnect.data.horariosPorDia
 import com.example.wodconnect.data.toLocalDate
 import com.example.wodconnect.modelo.repositories.ClasesRepository
 import com.google.firebase.Timestamp
+import com.google.type.DateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
@@ -53,6 +56,7 @@ class   ReserveViewModel @Inject constructor(
             try {
                 val clases = generarClasesSem()
                 clasesRepository.agregarClasesSem(clases)
+                Log.d("ReserveViewModel", "Generadas ${clases.size} clases")
                 _clasesSemGeneradas.value = clases
                 _errorMessage.value = null
             } catch (e: Exception){
@@ -65,12 +69,12 @@ class   ReserveViewModel @Inject constructor(
         }
     }
     //para obtener las clases de toda la semana con su nombre, detalle y horarios
-    private fun generarClasesSem() : List<Clases> {
+    private suspend fun generarClasesSem() : List<Clases> {
         val dias = getDaysOfWeek()
         val plazasDisponibles = 12
         val clasesSemana = mutableListOf<Clases>()
 
-        viewModelScope.launch {
+
             for (dia in dias){
 
                 val clasesDelDia = horariosPorDia[dia.fecha.dayOfWeek] ?: emptyList()
@@ -87,11 +91,9 @@ class   ReserveViewModel @Inject constructor(
                         availablePlaces = plazasDisponibles
                    )
                    clasesSemana.add(clases)
-
-
-                }
+               }
             }
-        }
+
         return clasesSemana
     }
     //se obtienen todas las clases disponibles en Firestore
@@ -108,15 +110,18 @@ class   ReserveViewModel @Inject constructor(
             }
         }
     }
-    //se obtienen las clases por día desde Firestore
+    //se obtienen las clases por día desde Firestore, y se ordenan por startTime
     fun obtenerClasesPorDia(selectedDay: LocalDate){
         viewModelScope.launch {
             _isLoading.value = true
             try {
                val allClases = clasesRepository.obtenerClases()
-                _clasesPorDia.value = allClases.filter {
-                    it.startTime?.toLocalDate() == selectedDay
-                }
+//                val allClases = _allClases.value ?: emptyList()
+                _clasesPorDia.value = allClases
+                    .filter { it.startTime?.toLocalDate() == selectedDay }
+//                    .distinctBy { it.id }
+                    .distinctBy { Triple(it.name, it.startTime, it.endTime) }
+                    .sortedBy { it.startTime?.toDate() }
                 _errorMessage.value = null
             } catch (e: Exception){
                 _errorMessage.value = "Error al obtener las clases"

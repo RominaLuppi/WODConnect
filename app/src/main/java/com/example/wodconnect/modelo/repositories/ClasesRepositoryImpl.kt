@@ -1,5 +1,6 @@
 package com.example.wodconnect.modelo.repositories
 
+import android.util.Log
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.data.DaysOfWeek
 import com.example.wodconnect.data.getDaysOfWeek
@@ -42,12 +43,10 @@ class ClasesRepositoryImpl @Inject constructor(
                batch.set(docRef,clase)
            }
            batch.commit().await()
-       } catch (_: Exception){
+           Log.d("ClasesRepository", "Clases subidas correctamente")
+       } catch (e: Exception){
+           Log.e("ClasesRepository", "Error al subir clases: ${e.message}")
 
        }
     }
-
-
-
-
 }
