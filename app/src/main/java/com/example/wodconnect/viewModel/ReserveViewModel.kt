@@ -6,11 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.data.getDaysOfWeek
+import com.example.wodconnect.data.horariosPorDia
 import com.example.wodconnect.data.toLocalDate
 import com.example.wodconnect.modelo.repositories.ClasesRepository
+import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,13 +35,67 @@ class   ReserveViewModel @Inject constructor(
     private val _clasesPorDia = MutableLiveData<List<Clases>>()
     val clasesPorDia: LiveData<List<Clases>> = _clasesPorDia
 
+    private val _clasesSemGeneradas = MutableLiveData<List<Clases>>()
+    val clasesSemGeneradas: LiveData<List<Clases>> = _clasesSemGeneradas
+
+    val daysOfWeek = getDaysOfWeek()
+
     init {
-        val today = LocalDate.now()
         obtenerClases()
-        obtenerClasesPorDia(today)
+        obtenerClasesPorDia(LocalDate.now())
+        cargarClasesSem()
     }
 
-    private fun obtenerClases() {
+    //se obtiene la lista de clases de la semana, se guardan en Firestore y se actualiza el LiveData
+    private fun cargarClasesSem(){
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val clases = generarClasesSem()
+                clasesRepository.agregarClasesSem(clases)
+                _clasesSemGeneradas.value = clases
+                _errorMessage.value = null
+            } catch (e: Exception){
+                _errorMessage.value = "Error al cargar las clases de la semana: ${e.message}"
+            } finally {
+                _isLoading.value = false
+
+            }
+
+        }
+    }
+    //para obtener las clases de toda la semana con su nombre, detalle y horarios
+    private fun generarClasesSem() : List<Clases> {
+        val dias = getDaysOfWeek()
+        val plazasDisponibles = 12
+        val clasesSemana = mutableListOf<Clases>()
+
+        viewModelScope.launch {
+            for (dia in dias){
+
+                val clasesDelDia = horariosPorDia[dia.fecha.dayOfWeek] ?: emptyList()
+
+               for(infoClase in clasesDelDia){
+                    val startDateTime = dia.fecha.atTime(infoClase.third.first)
+                    val endDayTime = dia.fecha.atTime(infoClase.third.second)
+
+                   val clases = Clases(
+                        name = infoClase.first,
+                        description = infoClase.second,
+                        startTime = Timestamp(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant())),
+                        endTime = Timestamp(Date.from(endDayTime.atZone(ZoneId.systemDefault()).toInstant())),
+                        availablePlaces = plazasDisponibles
+                   )
+                   clasesSemana.add(clases)
+
+
+                }
+            }
+        }
+        return clasesSemana
+    }
+    //se obtienen todas las clases disponibles en Firestore
+     private fun obtenerClases() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
@@ -68,53 +126,7 @@ class   ReserveViewModel @Inject constructor(
         }
     }
 
-    val daysOfWeek = getDaysOfWeek()
 
-//    private val _clases = MutableLiveData(
-//        listOf(
-//            Clases(1, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
-//            Clases(2, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
-//            Clases(3, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
-//            Clases(4, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
-//            Clases(5, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Lunes"),
-//            Clases(6, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Miércoles"),
-//            Clases(7, "CrossFit", "Alta intensidad", "09:00", "10:00", "Lunes"),
-//            Clases(8, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Martes"),
-//            Clases(9, "Yoga", "Estiramiento y relajación", "11:00", "12:00", "Miércoles"),
-//            Clases(10, "CrossFit", "Alta intensidad", "12:00", "13:00", "Jueves"),
-//            Clases(11, "Funcional", "Entrenamiento completo", "14:00", "15:00", "Martes"),
-//            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
-//            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Sábado"),
-//            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
-//            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Viernes"),
-//            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-//            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo"),
-//            Clases(12, "Yoga", "Estiramiento y relajación", "16:00", "17:00", "Sábado"),
-//            Clases(13, "Funcional", "Entrenamiento completo", "10:00", "11:00", "Jueves"),
-//            Clases(14, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-//            Clases(15, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-//            Clases(16, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Jueves"),
-//            Clases(17, "Yoga", "Estiramiento y relajación", "10:00", "11:00", "Domingo")
-//        )
-//    )
 
-//    private val _clasesForSelectedDay =MutableLiveData<List<Clases>>()
-//    val clasesForSelectedDay: LiveData<List<Clases>> = _clasesForSelectedDay
-//
-//
-//    init {
-//        setClasesForSelectedDay(LocalDate.now())
-//    }
-//
-//    fun setClasesForSelectedDay(fecha: LocalDate){
-//        val dayOfWeek = fecha.dayOfWeek.getDisplayName(TextStyle.FULL,
-//            Locale("es")).lowercase()
-//        _clasesForSelectedDay.value = _clases.value?.filter { it.weekDay?.lowercase() == dayOfWeek } ?: emptyList()
-//
-//    }
-//
-//    fun reserverClass(selectedClass: Clases) {
-//
-//    }
 
 }
