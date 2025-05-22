@@ -129,7 +129,7 @@ fun BottomBar(navController: NavController) {
             BottomBarItem(
                 iconRes = R.drawable.user,
                 label = stringResource(R.string.icon_perfil),
-                onClick = { navController.navigate("Perfil") },
+                onClick = { navController.navigate("PerfilScreen") },
 
                 )
         }

@@ -119,7 +119,6 @@ class   ReserveViewModel @Inject constructor(
 //                val allClases = _allClases.value ?: emptyList()
                 _clasesPorDia.value = allClases
                     .filter { it.startTime?.toLocalDate() == selectedDay }
-//                    .distinctBy { it.id }
                     .distinctBy { Triple(it.name, it.startTime, it.endTime) }
                     .sortedBy { it.startTime?.toDate() }
                 _errorMessage.value = null

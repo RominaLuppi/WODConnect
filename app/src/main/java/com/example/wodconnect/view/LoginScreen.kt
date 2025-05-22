@@ -24,12 +24,16 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,12 +50,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.viewModel.LoginViewModel
+import kotlin.math.log
 
 
 @Composable
@@ -80,44 +86,59 @@ fun LoginScreen(
 
     Login(
         navController = navController,
-        modifier = Modifier.fillMaxSize(),
         loginViewModel = loginViewModel,
         email = email,
         password = password
     )
-//    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(
     navController: NavController,
-    modifier: Modifier,
     loginViewModel: LoginViewModel,
     email: String,
     password: String
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(16.dp)
-            .focusable()
-    )
-    {
-        Column(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
+    val errorMessage by loginViewModel.errorMessage.observeAsState()
+    Scaffold( containerColor = Color.Black,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
+                title = {
+                    Column(verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = stringResource(R.string.text_icon_btn),
+                            color = Color.White,
+                            fontSize = 18.sp,
+                            modifier = Modifier.clickable { navController.popBackStack() }
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                            navController.navigate("HomeScreen")
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.text_icon_btn),
+                            tint = Color.White
+                        )
+                    }
+                }
+            )
+        }) { paddingScaffold ->
+
+        Column(modifier = Modifier.padding(paddingScaffold)
+            .verticalScroll(rememberScrollState()))
         {
-            Spacer(modifier = Modifier.height(54.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
                     .heightIn(max = 300.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 painter = painterResource(R.drawable.logo_wodconnect),
@@ -125,7 +146,7 @@ fun Login(
                 contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 text = stringResource(R.string.login),
@@ -136,50 +157,49 @@ fun Login(
                 color = Color.White,
 
                 )
-            Spacer(modifier = Modifier.weight(1f))
-            EmailField(email = email, onTextFieldChanged = { loginViewModel.onEmailChanged(it) })
+            Spacer(modifier = Modifier.height(24.dp))
+            EmailField(email = email,
+                onTextFieldChanged = { loginViewModel.onEmailChanged(it) })
 
+            Spacer(modifier = Modifier.height(16.dp))
+            PasswordField(password = password,
+                onTextFieldChanged = { loginViewModel.onPasswordChanged(it) }
+            )
 
-            Spacer(modifier = Modifier.weight(1f))
-            PasswordField(
-                password = password,
-                onTextFieldChanged = { loginViewModel.onPasswordChanged(it) })
-
-
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
             ForgotPassword(
                 navController = navController,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(18.dp))
             BtnLogin(
                 loginViewModel = loginViewModel,
                 email = email,
                 password = password
             )
-            Spacer(modifier = Modifier.weight(1f))
-
-        }
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(4.dp),
-            onClick = {
-                navController.navigate("HomeScreen") {
-                    popUpTo("LoginScreen") { inclusive = true }
-                }
-            }) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.text_icon_btn),
-                tint = Color.White
-
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = stringResource(R.string.btn_crear_cuenta),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                color = Color.Gray,
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { navController.navigate("PerfilScreen") }
             )
-
         }
     }
-
+    if (!errorMessage.isNullOrEmpty()){
+        Text(
+            text = errorMessage ?: "",
+            color = Color.Red,
+            modifier = Modifier.padding(8.dp),
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -206,6 +226,8 @@ fun BtnLogin(
         onClick = { loginViewModel.login(email, password) },
         modifier = Modifier
             .fillMaxWidth()
+            .height(48.dp)
+            .padding(horizontal = 32.dp)
             .height(48.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.btn_color),
@@ -231,6 +253,7 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
         value = email,
         onValueChange = onTextFieldChanged,
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxWidth()
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
         placeholder = { Text(stringResource(R.string.email)) },
@@ -259,6 +282,7 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
         onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier
             .fillMaxWidth()
+            .padding(16.dp)
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
         placeholder = { Text(stringResource(R.string.password)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

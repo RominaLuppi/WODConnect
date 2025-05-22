@@ -105,9 +105,7 @@ Column(modifier = modifier
     Spacer(modifier = Modifier.weight(1f))
 
     Button(
-        onClick = {
-            navController.navigate("LoginScreen")
-        },
+        onClick = { navController.navigate("LoginScreen") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp),
@@ -116,7 +114,7 @@ Column(modifier = modifier
             contentColor = Color.White,
         )
     ) {
-        Text(text = stringResource(R.string.btn_registrarse),
+        Text(text = stringResource(R.string.btn_login),
             color = Color.White,
             fontSize = 20.sp)
     }
@@ -131,14 +129,6 @@ Column(modifier = modifier
         Modifier.clickable { },
         painterResource(id = R.drawable.facebook),
         stringResource(R.string.btn_facebook)
-    )
-    Text(
-        text = stringResource(R.string.btn_ya_registrado),
-        color = Color.White,
-        modifier = Modifier
-            .padding(24.dp)
-            .clickable { navController.navigate("LoginScreen") },
-        fontWeight = FontWeight.Bold
     )
     Spacer(modifier = Modifier.weight(1f))
 }

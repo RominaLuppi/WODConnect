@@ -10,7 +10,7 @@
 
     <string name="home_text">"Tu siguiente entrenamiento comienza aquí" </string>
     <string name="btn_registrarse">Registrarse</string>
-    <string name="btn_ya_registrado">Ya estoy registrado</string>
+    <string name="btn_crear_cuenta">No tienes cuenta? Resgístrate</string>
     <string name="btn_google">Continuar con Google</string>
     <string name="btn_facebook">Continuar con Facebook</string>
 
