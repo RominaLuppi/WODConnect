@@ -10,6 +10,7 @@ import com.example.wodconnect.modelo.repositories.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -35,6 +36,9 @@ class LoginViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
+    private val _registroExitoso = MutableLiveData<Boolean>()
+    val registroExitoso: LiveData<Boolean> = _registroExitoso
+
     fun login(email: String, password: String) {
         _isLoading.value = true
         _errorMessage.value = null
@@ -48,14 +52,15 @@ class LoginViewModel @Inject constructor(
                         id =  firebaseUser.id,
                         email = firebaseUser.email ?: "",
                         name = firebaseUser.name ?: ""
-                    ) }
+                    )
+                }
                 .onFailure { exception ->
-                    val message = when(exception){
+                    val message = when (exception) {
                         is FirebaseAuthInvalidUserException -> "Usuario no registrado. Por favor, regístrate"
                         is FirebaseAuthInvalidCredentialsException -> "Correo y/o contraseña incorrecto"
                         else -> exception.message ?: "Ha ocurrido un error"
                     }
-                    _errorMessage.value = exception.message}
+                }
         }
     }
     fun cleanError(){
@@ -80,13 +85,17 @@ class LoginViewModel @Inject constructor(
             _isLoading.value = false
             result
                 .onSuccess { firebaseUser ->
-                _user.value = firebaseUser
+                    _user.value = firebaseUser
+                    _registroExitoso.value = true
             }
                 .onFailure { exception ->
-                    _errorMessage.value = exception.message
+                    val message = when (exception) {
+                        is FirebaseAuthInvalidUserException -> "Este correo ya está registrado"
+                        is FirebaseAuthWeakPasswordException -> "La contraseña es demasiado débil"
+                        else -> exception.message ?: "Ha ocurrido un error al registrar al usuario"
+                    }
+                    _registroExitoso.value = false
                 }
         }
     }
-
-
 }

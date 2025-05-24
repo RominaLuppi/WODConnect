@@ -1,15 +1,11 @@
 package com.example.wodconnect.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -50,6 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +55,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.viewModel.LoginViewModel
-import kotlin.math.log
 
 
 @Composable
@@ -79,7 +76,7 @@ fun LoginScreen(
             navController.navigate("ReserveScreen") {
                 popUpTo("LoginScreen") {
                     inclusive = true
-                } //elimina la pantalla de login del backstack. Si el usuario pulsa "atrás" no regresa al login.
+                } //elimina la pantalla de login del backstack.
             }
         }
     }
@@ -101,6 +98,8 @@ fun Login(
     password: String
 ) {
     val errorMessage by loginViewModel.errorMessage.observeAsState()
+    val registroExitoso by loginViewModel.registroExitoso.observeAsState()
+
     Scaffold( containerColor = Color.Black,
         topBar = {
             TopAppBar(
@@ -138,7 +137,7 @@ fun Login(
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(18.dp)
                     .heightIn(max = 300.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 painter = painterResource(R.drawable.logo_wodconnect),
@@ -188,8 +187,13 @@ fun Login(
                 modifier = Modifier
                     .padding(bottom = 12.dp)
                     .align(Alignment.CenterHorizontally)
-                    .clickable { navController.navigate("PerfilScreen") }
+                    .clickable { loginViewModel.register(email = email, password = password) }
             )
+        }
+        LaunchedEffect(registroExitoso) {
+            if( registroExitoso == true){
+                navController.navigate("PerfilScreen")
+            }
         }
     }
     if (!errorMessage.isNullOrEmpty()){
@@ -253,7 +257,7 @@ fun EmailField(email: String, onTextFieldChanged: (String) -> Unit) {
         value = email,
         onValueChange = onTextFieldChanged,
         modifier = Modifier
-            .padding(16.dp)
+            .padding(18.dp)
             .fillMaxWidth()
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
         placeholder = { Text(stringResource(R.string.email)) },
@@ -282,10 +286,11 @@ fun PasswordField(password: String, onTextFieldChanged: (String) -> Unit) {
         onValueChange = { onTextFieldChanged(it) },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(18.dp)
             .border(width = 1.dp, Color.Gray, shape = MaterialTheme.shapes.small),
         placeholder = { Text(stringResource(R.string.password)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
         maxLines = 1,
         leadingIcon = {

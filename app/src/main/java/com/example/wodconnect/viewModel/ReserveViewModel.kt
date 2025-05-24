@@ -56,7 +56,6 @@ class   ReserveViewModel @Inject constructor(
             try {
                 val clases = generarClasesSem()
                 clasesRepository.agregarClasesSem(clases)
-                Log.d("ReserveViewModel", "Generadas ${clases.size} clases")
                 _clasesSemGeneradas.value = clases
                 _errorMessage.value = null
             } catch (e: Exception){
@@ -65,7 +64,6 @@ class   ReserveViewModel @Inject constructor(
                 _isLoading.value = false
 
             }
-
         }
     }
     //para obtener las clases de toda la semana con su nombre, detalle y horarios
@@ -74,9 +72,7 @@ class   ReserveViewModel @Inject constructor(
         val plazasDisponibles = 12
         val clasesSemana = mutableListOf<Clases>()
 
-
             for (dia in dias){
-
                 val clasesDelDia = horariosPorDia[dia.fecha.dayOfWeek] ?: emptyList()
 
                for(infoClase in clasesDelDia){
@@ -116,7 +112,6 @@ class   ReserveViewModel @Inject constructor(
             _isLoading.value = true
             try {
                val allClases = clasesRepository.obtenerClases()
-//                val allClases = _allClases.value ?: emptyList()
                 _clasesPorDia.value = allClases
                     .filter { it.startTime?.toLocalDate() == selectedDay }
                     .distinctBy { Triple(it.name, it.startTime, it.endTime) }
@@ -129,8 +124,4 @@ class   ReserveViewModel @Inject constructor(
             }
         }
     }
-
-
-
-
 }

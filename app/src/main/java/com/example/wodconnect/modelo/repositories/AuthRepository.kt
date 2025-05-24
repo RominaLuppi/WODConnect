@@ -3,7 +3,6 @@ package com.example.wodconnect.modelo.repositories
 import com.example.wodconnect.data.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 
@@ -21,7 +20,7 @@ interface AuthRepository {
                     email = user.email ?: "",
                     name = user.displayName ?: ""))
             } else {
-                Result.failure(Exception ("No se pudo registrar al usuario"))
+                Result.failure(Exception ("No se ha podido registrar al usuario"))
             }
         } catch (e: Exception){
             Result.failure(e)

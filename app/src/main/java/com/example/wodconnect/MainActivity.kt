@@ -20,6 +20,8 @@ import com.example.wodconnect.viewModel.LoginViewModel
 import com.example.wodconnect.view.ReserveScreen
 import com.example.wodconnect.view.ResetPasswordScreen
 import com.example.wodconnect.ui.theme.WODConnectTheme
+import com.example.wodconnect.view.PerfilScreen
+import com.example.wodconnect.viewModel.PerfilViewModel
 import com.example.wodconnect.viewModel.ReserveViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,8 +70,13 @@ private fun MainNavigation() {
                 val viewModel: ReserveViewModel = hiltViewModel()
                 ReserveScreen(
                     navController = navController,
-                    modifier = Modifier,
                     reserveViewModel = viewModel
+                )
+            }
+            composable("PerfilScreen"){
+                val viewModel: PerfilViewModel = hiltViewModel()
+                PerfilScreen(navController = navController,
+                    perfilViewModel = viewModel
                 )
             }
         }

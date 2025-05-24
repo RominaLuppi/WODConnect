@@ -63,7 +63,7 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
-//    implementation(libs.jakewharton.threetenabp)
+
 
 
     implementation (libs.androidx.runtime.livedata)
@@ -109,7 +109,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
 
-
+    //Coil
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

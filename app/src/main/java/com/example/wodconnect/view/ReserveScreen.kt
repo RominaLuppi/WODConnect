@@ -20,16 +20,22 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -52,24 +58,51 @@ import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.viewModel.ReserveViewModel
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Locale
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReserveScreen(
     navController: NavController,
-    modifier: Modifier,
     reserveViewModel: ReserveViewModel = hiltViewModel()
 ) {
 
-    val isLoading by reserveViewModel.isLoading.observeAsState(false)
     val errorMessage by reserveViewModel.errorMessage.observeAsState()
 
-    Scaffold(
-        bottomBar = { BottomBar(navController) },
-        containerColor = Color.Black
+    Scaffold(containerColor = Color.Black,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
+                title = {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = stringResource(R.string.text_icon_btn),
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            modifier = Modifier.clickable { navController.popBackStack() }
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate("HomeScreen")
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.text_icon_btn),
+                            tint = Color.White
+                        )
+                    }
+                }
+            )
+        },
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
         Box(
             Modifier
@@ -78,16 +111,17 @@ fun ReserveScreen(
                 .padding(innerPadding)
                 .focusable()
         ) {
-            Column(modifier = Modifier.padding(top = 16.dp)) {
-                Text(text = stringResource(R.string.title_reservas),
-                    modifier = Modifier.padding(16.dp),
+            Column(
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.title_reservas),
+                    modifier = Modifier.padding(start = 20.dp),
                     color = Color.White,
-                    style = MaterialTheme.typography.headlineMedium)
-
-                Spacer(modifier.height(36.dp))
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
                 Reserve(
-                    navController = navController,
                     modifier = Modifier.fillMaxSize(),
                     reserveViewModel = reserveViewModel,
                     onDaySelected = { selectedDay ->
@@ -103,7 +137,6 @@ fun ReserveScreen(
 @Composable
 fun BottomBar(navController: NavController) {
     Surface(
-        tonalElevation = 4.dp,
         color = Color.Black,
         modifier = Modifier
             .fillMaxWidth()
@@ -156,26 +189,26 @@ fun BottomBarItem(iconRes: Int, label: String, onClick: () -> Unit) {
             style = MaterialTheme.typography.labelSmall,
             color = Color.White
         )
-
     }
-
 }
-
 @Composable
-fun Reserve(navController: NavController,
-            modifier: Modifier,
-            reserveViewModel: ReserveViewModel,
-            onDaySelected: (LocalDate) -> Unit) {
+fun Reserve(
+    modifier: Modifier,
+    reserveViewModel: ReserveViewModel,
+    onDaySelected: (LocalDate) -> Unit
+) {
 
     val daysOfWeek = reserveViewModel.daysOfWeek
     var selectedIndex by remember { mutableStateOf(0) }
     val selectedDate = daysOfWeek[selectedIndex].fecha
 
     val clasesPorDia by reserveViewModel.clasesPorDia.observeAsState(emptyList())
+    val isLoading by reserveViewModel.isLoading.observeAsState(false)
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .clip(RoundedCornerShape(8.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -195,11 +228,17 @@ fun Reserve(navController: NavController,
                         .background(Color.Black),
                     verticalAlignment = Alignment.CenterVertically,
                     userScrollEnabled = true,
-                    ) {
+                ) {
                     itemsIndexed(daysOfWeek) { index, day ->
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
+                                .then(
+                                    if (index == selectedIndex){
+                                      Modifier.clip(RoundedCornerShape(4.dp))
+                                    } else {
+                                        Modifier
+                                    }
+                                )
                                 .background(
                                     if (index == selectedIndex) {
                                         colorResource(R.color.btn_color)
@@ -207,9 +246,10 @@ fun Reserve(navController: NavController,
                                         colorResource(R.color.background_card)
                                     }
                                 )
-                                .clickable { selectedIndex = index
+                                .clickable {
+                                    selectedIndex = index
                                     onDaySelected(day.fecha)
-                                 }
+                                }
                                 .padding(horizontal = 6.dp, vertical = 6.dp)
 
                         ) {
@@ -227,7 +267,7 @@ fun Reserve(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
         }
         item {
-            if (clasesPorDia.isEmpty()) {
+            if (!isLoading && clasesPorDia.isEmpty()) {
                 Text(
                     text = "No hay clases para este día",
                     modifier = Modifier.fillMaxWidth(),
@@ -236,16 +276,16 @@ fun Reserve(navController: NavController,
                 )
             }
         }
-
-        items(clasesPorDia){ clase ->
-            ClaseItem(clase = clase, onReservedClick = {   })
+        items(clasesPorDia) { clase ->
+            ClaseItem(clase = clase, onReservedClick = { })
         }
+
     }
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
-        onClick = {      },
+        onClick = { },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.btn_color),
             disabledContainerColor = colorResource(R.color.btn_disable_color),
@@ -313,8 +353,10 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
                         containerColor = colorResource(R.color.btn_color)
                     )
                 ) {
-                    Text(text = stringResource(R.string.btn_reserve),
-                        fontSize = 16.sp)
+                    Text(
+                        text = stringResource(R.string.btn_reserve),
+                        fontSize = 16.sp
+                    )
                 }
                 Text(
                     text = stringResource(R.string.text_plazas),
