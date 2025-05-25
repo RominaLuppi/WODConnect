@@ -1,7 +1,8 @@
 package com.example.wodconnect.viewModel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PerfilViewModel @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val auth: FirebaseAuth,
+    private val firebaseAuth: FirebaseAuth,
     private val perfilRepository: PerfilRepository
 
 ) : ViewModel(){
@@ -32,6 +33,9 @@ class PerfilViewModel @Inject constructor(
 
     private val _resultado = MutableLiveData<Result<Unit>>()
     val resultado: LiveData<Result<Unit>> = _resultado
+
+    val photoUrl = MutableLiveData<String?>()
+    val errorMsg = MutableLiveData<String?>()
 
     fun onNameChanged(newName: String){
         _name.value = newName
@@ -52,7 +56,31 @@ class PerfilViewModel @Inject constructor(
             val result = perfilRepository.guardarPerfil(nombre, email, fechaNac)
             _resultado.value = result
         }
-
-
     }
+    fun actualizarFoto(uri: Uri) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+
+        viewModelScope.launch {
+            val result = perfilRepository.actualizarPerfilConFoto(uri, uid)
+            if (result.isSuccess) {
+               photoUrl.value = result.getOrNull().toString()
+            } else {
+                Log.e("PerfilViewModel", "Error subiendo foto", result.exceptionOrNull())
+            }
+        }
+    }
+
+    fun cargarFotoPerfil(){
+        val userId = firebaseAuth.currentUser?.uid ?: return
+        viewModelScope.launch {
+            val result = perfilRepository.obtenerUrlFotoPerfil(userId)
+
+            if (result.isSuccess){
+                photoUrl.value = result.getOrNull()
+            } else {
+                errorMsg.value = "Error al cargar la foto: ${result.exceptionOrNull()?.message}"
+            }
+        }
+    }
+
 }

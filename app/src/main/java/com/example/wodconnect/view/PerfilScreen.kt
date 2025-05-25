@@ -1,6 +1,9 @@
 package com.example.wodconnect.view
 
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -67,6 +70,15 @@ fun PerfilScreen(
     val email by perfilViewModel.email.observeAsState()
     val fechaNac by perfilViewModel.fechaNac.observeAsState()
     val resultado by perfilViewModel.resultado.observeAsState()
+    val photoUrl by perfilViewModel.photoUrl.observeAsState()
+
+    //abrir el selector de imagen y capturar la Uri local
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent() //se abre el selector de archivos
+    ) { uri: Uri? ->
+        uri?.let { perfilViewModel.actualizarFoto(it) }
+        }
+
 
     Scaffold(containerColor = Color.Black,
         topBar = {
@@ -114,7 +126,7 @@ fun PerfilScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             AsyncImage(
-                model = UserPhoto,
+                model = photoUrl ?: R.drawable.icono_perfil_usuario,
                placeholder = painterResource(R.drawable.icono_perfil_usuario),
                 error = painterResource(R.drawable.icono_perfil_usuario),
                 contentDescription = stringResource(R.string.text_foto_perfil),
@@ -123,7 +135,7 @@ fun PerfilScreen(
                     .size(120.dp)
                     .clip(CircleShape)
                     .align(Alignment.CenterHorizontally)
-
+                    .clickable { launcher.launch("image/*") } //se indica que tipo de contenido se quiere lanzar
             )
             Spacer(modifier = Modifier.height(24.dp))
 

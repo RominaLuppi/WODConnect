@@ -8,6 +8,7 @@ androidxUi = "1.4.0"
 bom = "3.2.0"
 coilCompose = "3.2.0"
 converterScalars = "2.9.0"
+firebaseStorageKtx = "21.0.2"
 foundation = "1.7.8"
 foundationVersion = "<version>"
 hiltAndroid = "2.50"
@@ -70,6 +71,7 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-room-compiler-v271 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationVersion" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltVersion" }
