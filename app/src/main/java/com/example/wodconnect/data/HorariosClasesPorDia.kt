@@ -22,6 +22,7 @@ val horariosPorDia: Map<DayOfWeek, List<Triple<String,String, Pair<LocalTime, Lo
     DayOfWeek.TUESDAY to listOf(
         Triple("Halterofilia","Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
         Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
+        Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),
         Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
         Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
         Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0))),
@@ -39,8 +40,10 @@ val horariosPorDia: Map<DayOfWeek, List<Triple<String,String, Pair<LocalTime, Lo
         Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
         Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
         Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
-        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0))),
+        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0)),
+        Triple("HIIT", "Media intensidad", LocalTime.of(20,15) to LocalTime.of(21,15))),
     DayOfWeek.FRIDAY to listOf(
+        Triple("HIIT", "Media intensidad", LocalTime.of(8,0) to LocalTime.of(9,0)),
         Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
         Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
         Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),

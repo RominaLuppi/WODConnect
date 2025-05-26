@@ -11,15 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.wodconnect.view.HomeScreen
 import com.example.wodconnect.view.LoginScreen
 import com.example.wodconnect.viewModel.LoginViewModel
 import com.example.wodconnect.view.ReserveScreen
 import com.example.wodconnect.view.ResetPasswordScreen
 import com.example.wodconnect.ui.theme.WODConnectTheme
+import com.example.wodconnect.view.HorarioScreen
 import com.example.wodconnect.view.PerfilScreen
 import com.example.wodconnect.viewModel.PerfilViewModel
 import com.example.wodconnect.viewModel.ReserveViewModel
@@ -79,6 +82,20 @@ private fun MainNavigation() {
                     perfilViewModel = viewModel
                 )
             }
+            composable(
+                route = "PerfilScreen?modoRegistro={modoRegistro}",
+                arguments = listOf(navArgument("modoRegistro") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                })
+            ) { backStackEntry ->
+                val modoRegistro = backStackEntry.arguments?.getBoolean("modoRegistro") ?: false
+                PerfilScreen(navController = navController, modoRegistro = modoRegistro)
+            }
+            composable("HorarioScreen") {
+               HorarioScreen(navController = navController)
+            }
+
         }
     }
 }

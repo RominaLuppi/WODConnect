@@ -36,8 +36,8 @@ class LoginViewModel @Inject constructor(
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    private val _registroExitoso = MutableLiveData<Boolean>()
-    val registroExitoso: LiveData<Boolean> = _registroExitoso
+    private val _registroExitoso = MutableLiveData<Boolean?>()
+    val registroExitoso: LiveData<Boolean?> = _registroExitoso
 
     fun login(email: String, password: String) {
         _isLoading.value = true
@@ -60,6 +60,7 @@ class LoginViewModel @Inject constructor(
                         is FirebaseAuthInvalidCredentialsException -> "Correo y/o contraseña incorrecto"
                         else -> exception.message ?: "Ha ocurrido un error"
                     }
+                    _errorMessage.value = message
                 }
         }
     }
@@ -97,5 +98,8 @@ class LoginViewModel @Inject constructor(
                     _registroExitoso.value = false
                 }
         }
+    }
+    fun resetRegistroExitoso(){
+        _registroExitoso.value = null
     }
 }

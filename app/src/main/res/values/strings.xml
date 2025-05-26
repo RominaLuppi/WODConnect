@@ -32,10 +32,13 @@
     <string name="btn_workout">CrossFit</string>
 
     <string name="btn_dialog">Cerrar</string>
+    <string name="title_dialog">Información</string>
+    <string name="msj_dialog">Esta opción aún no está disponible. Estamos trabajando en ello.</string>
 
     <string name="text_foto_perfil">Foto de perfil</string>
     <string name="text_nombre_usuario">Nombre</string>
     <string name="text_email_usuario">Email</string>
+    <string name="text_password_usuario">Contraseña</string>
     <string name="text_fechaNac_usuario">Fecha de Nacimiento</string>
     <string name="btn_guardar">Guardar</string>
 

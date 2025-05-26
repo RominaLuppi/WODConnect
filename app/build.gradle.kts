@@ -93,6 +93,7 @@ dependencies {
 
     //Room
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.glance)
     // Procesador de anotaciones para Room
     ksp(libs.androidx.room.compiler)
     //ViewModel
@@ -112,7 +113,11 @@ dependencies {
 
 
     //Coil
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+//    implementation(libs.coil.compose)
+//    implementation(libs.coil.compose.base)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

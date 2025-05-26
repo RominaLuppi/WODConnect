@@ -1,5 +1,6 @@
 package com.example.wodconnect.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -8,9 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,7 +23,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -53,12 +59,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.viewModel.ReserveViewModel
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Locale
@@ -120,7 +126,6 @@ fun ReserveScreen(
                     color = Color.White,
                     style = MaterialTheme.typography.headlineMedium
                 )
-
                 Reserve(
                     modifier = Modifier.fillMaxSize(),
                     reserveViewModel = reserveViewModel,
@@ -136,6 +141,7 @@ fun ReserveScreen(
 
 @Composable
 fun BottomBar(navController: NavController) {
+
     Surface(
         color = Color.Black,
         modifier = Modifier
@@ -152,20 +158,21 @@ fun BottomBar(navController: NavController) {
             BottomBarItem(
                 iconRes = R.drawable.calendar,
                 label = stringResource(R.string.icon_agenda),
-                onClick = { navController.navigate("Agenda") },
+                onClick = {  },
             )
             BottomBarItem(
                 iconRes = R.drawable.clock,
                 label = stringResource(R.string.icon_horario),
-                onClick = { navController.navigate("Horarios") },
+                onClick = { navController.navigate("HorarioScreen") },
             )
+
             BottomBarItem(
                 iconRes = R.drawable.user,
                 label = stringResource(R.string.icon_perfil),
                 onClick = { navController.navigate("PerfilScreen") },
-
-                )
+            )
         }
+
     }
 }
 
@@ -191,6 +198,7 @@ fun BottomBarItem(iconRes: Int, label: String, onClick: () -> Unit) {
         )
     }
 }
+
 @Composable
 fun Reserve(
     modifier: Modifier,
@@ -233,8 +241,8 @@ fun Reserve(
                         Box(
                             modifier = Modifier
                                 .then(
-                                    if (index == selectedIndex){
-                                      Modifier.clip(RoundedCornerShape(4.dp))
+                                    if (index == selectedIndex) {
+                                        Modifier.clip(RoundedCornerShape(4.dp))
                                     } else {
                                         Modifier
                                     }

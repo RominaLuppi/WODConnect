@@ -20,12 +20,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +55,7 @@ import com.example.wodconnect.R
 @Composable
 fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
     var email by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
     Box(
         Modifier
             .fillMaxSize()
@@ -68,13 +71,15 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {
-            Image(modifier = Modifier
-                .width(200.dp)
-                .padding(top = 42.dp)
-                .clip(RoundedCornerShape(16.dp)),
+            Image(
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(top = 42.dp)
+                    .clip(RoundedCornerShape(16.dp)),
                 painter = painterResource(R.drawable.logo_app),
                 contentDescription = "logo",
-                contentScale = ContentScale.Fit)
+                contentScale = ContentScale.Fit
+            )
 
             Spacer(modifier = Modifier.height(42.dp))
 
@@ -114,9 +119,7 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
             Spacer(modifier = Modifier.height(28.dp))
 
             Button(
-                onClick = { //hacer logica boton y comprobar campo email es correcto.
-
-                },
+                onClick = { showDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -128,22 +131,57 @@ fun ResetPasswordScreen(navController: NavController, modifier: Modifier) {
                 ),
 
                 ) {
-                Text(text = stringResource(R.string.btn_reset),
-                    fontSize = 20.sp)
+                Text(
+                    text = stringResource(R.string.btn_reset),
+                    fontSize = 20.sp
+                )
+            }
 
+            if (showDialog) {
+                BtnDialog(onDismiss = { showDialog = false })
             }
         }
     }
-
 }
 
-@Preview
 @Composable
-fun ResetPasswordScreenPreview() {
-    val navController = rememberNavController()
-    ResetPasswordScreen(
-        navController = navController,
-        modifier = Modifier
-
+fun BtnDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        modifier = Modifier.clip(shape = RoundedCornerShape(12.dp)),
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(id = R.string.title_dialog),
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = Color.White
+            )
+        },
+        containerColor = Color.Black,
+        tonalElevation = 24.dp,
+        text = {
+            Text(
+                text = stringResource(id = R.string.msj_dialog),
+                fontSize = 18.sp,
+                color = Color.White,
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.width(250.dp),
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = Color.White,
+                    containerColor = colorResource(id = R.color.btn_color)
+                )
+            ) {
+                Text(text = stringResource(R.string.btn_dialog),
+                    fontSize = 16.sp)
+            }
+        }
     )
 }
+
+
