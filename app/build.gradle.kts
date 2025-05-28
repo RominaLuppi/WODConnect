@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -76,22 +74,7 @@ dependencies {
 
     implementation (libs.kotlin.stdlib)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    // Retrofit with Scalar Converter
-    implementation(libs.converter.scalars)
-    implementation(libs.converter.gson)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.retrofit.v290)
-    implementation(libs.kotlinx.serialization.json)  // Agrega la dependencia de Kotlinx Serialization
-    implementation(libs.retrofit2.kotlinx.serialization.converter.v080)  // Convertidor de Kotlinx para Retrofit
-    implementation(libs.okhttp)
 
-    //Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.glance)
-    // Procesador de anotaciones para Room
-    ksp(libs.androidx.room.compiler)
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 

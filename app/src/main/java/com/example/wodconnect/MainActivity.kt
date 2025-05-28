@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -45,7 +44,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainNavigation() {
     val navController = rememberNavController()
-    val loginViewModel: LoginViewModel = viewModel()
 
     Surface(
         modifier = Modifier.fillMaxSize(),

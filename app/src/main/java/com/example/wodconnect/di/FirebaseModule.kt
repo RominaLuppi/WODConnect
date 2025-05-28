@@ -33,5 +33,4 @@ object FirebaseModule {
     @Singleton
     fun provideClasesFirestoreRepository(firestore: FirebaseFirestore): ClasesRepository =
         ClasesRepositoryImpl(firestore)
-
 }

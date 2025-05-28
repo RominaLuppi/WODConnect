@@ -1,5 +1,6 @@
 package com.example.wodconnect.viewModel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,25 +28,19 @@ class   ReserveViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _allClases = MutableLiveData<List<Clases>>()
-    val allClases: LiveData<List<Clases>> = _allClases
 
-    private val _isLoading = MutableLiveData<Boolean>(true)
+    private val _isLoading = MutableLiveData(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
 
     private val _clasesPorDia = MutableLiveData<List<Clases>>(null)
     val clasesPorDia: LiveData<List<Clases>> = _clasesPorDia
 
     private val _clasesSemGeneradas = MutableLiveData<List<Clases>>()
-    val clasesSemGeneradas: LiveData<List<Clases>?> = _clasesSemGeneradas
 
     private val _clasesReservadas = MutableLiveData<List<String>>()
     val clasesReservadas: LiveData<List<String>> = _clasesReservadas
-
-    private val _reservasUsuario = MutableLiveData<List<String>>()
-    val reservasUsuario: LiveData<List<String>> = _reservasUsuario
 
     val daysOfWeek = getDaysOfWeek()
 
@@ -54,7 +49,6 @@ class   ReserveViewModel @Inject constructor(
         obtenerClasesPorDia(LocalDate.now())
         cargarClasesSem()
     }
-
     //se obtiene la lista de clases de la semana, se guardan en Firestore y se actualiza el LiveData
     private fun cargarClasesSem(){
         viewModelScope.launch {
@@ -73,7 +67,8 @@ class   ReserveViewModel @Inject constructor(
         }
     }
     //para obtener las clases de toda la semana con su nombre, detalle y horarios
-    private suspend fun generarClasesSem() : List<Clases> {
+    @SuppressLint("SuspiciousIndentation")
+    private fun generarClasesSem() : List<Clases> {
         val dias = getDaysOfWeek()
         val plazasDisponibles = 12
         val clasesSemana = mutableListOf<Clases>()
@@ -141,7 +136,7 @@ class   ReserveViewModel @Inject constructor(
             val userRef = Firebase.firestore.collection("Usuarios").document(userId)
 
             // Si el ID está vacío se genera uno temporal
-            val claseId = if (clase.id.isNotEmpty()) clase.id else Firebase.firestore.collection("Reservas").document().id
+            val claseId = clase.id.ifEmpty { Firebase.firestore.collection("Reservas").document().id }
 
             val claseConId = clase.copy(id = claseId)
 

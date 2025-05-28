@@ -1,6 +1,5 @@
 package com.example.wodconnect.viewModel
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.example.wodconnect.data.model.User
 import com.example.wodconnect.modelo.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,8 +46,8 @@ class LoginViewModel @Inject constructor(
                 .onSuccess { firebaseUser ->
                     _user.value = User(
                         id =  firebaseUser.id,
-                        email = firebaseUser.email ?: "",
-                        name = firebaseUser.name ?: ""
+                        email = firebaseUser.email,
+                        name = firebaseUser.name
                     )
                 }
                 .onFailure { exception ->
@@ -74,34 +72,4 @@ class LoginViewModel @Inject constructor(
         _password.value = newPassword
     }
 
-    //registro de un nuevo usuario en Firebase
-    fun register(email: String, password: String){
-        _isLoading.value = true
-        _errorMessage.value = null
-
-        viewModelScope.launch {
-            val result = authRepository.register(email, password)
-            _isLoading.value = false
-            result
-                .onSuccess { firebaseUser ->
-                    _user.value = firebaseUser
-                    _registroExitoso.value = true
-            }
-                .onFailure { exception ->
-                    val message = when (exception) {
-                        is FirebaseAuthInvalidUserException -> "Este correo ya está registrado"
-                        is FirebaseAuthWeakPasswordException -> "La contraseña es demasiado débil"
-                        else -> exception.message ?: "Ha ocurrido un error al registrar al usuario"
-                    }
-                    _registroExitoso.value = false
-                }
-        }
-    }
-    fun resetRegistroExitoso(){
-        _registroExitoso.value = null
-    }
-    fun cargarReservasUsuarioRegistrado(userID: String){
-
-
-    }
 }

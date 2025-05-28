@@ -15,11 +15,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,7 +39,7 @@ import com.example.wodconnect.R
 fun HorarioScreen(navController: NavController) {
 
     //permitimos hacer zoom a la imagen del horario
-    val scale = remember { mutableStateOf(1f) }
+    val scale = remember { mutableFloatStateOf(1f) }
     val offset = remember { mutableStateOf(Offset.Zero) }
 
     val transformState = rememberTransformableState { zoomChange, offsetChange, _ ->
@@ -88,8 +88,8 @@ fun HorarioScreen(navController: NavController) {
                 contentDescription = stringResource(R.string.icon_horario),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.graphicsLayer(
-                    scaleX = scale.value.coerceIn(1f, 5f),
-                    scaleY = scale.value.coerceIn(1f, 5f),
+                    scaleX = scale.floatValue.coerceIn(1f, 5f),
+                    scaleY = scale.floatValue.coerceIn(1f, 5f),
                     translationX = offset.value.x,
                     translationY = offset.value.y
                 )

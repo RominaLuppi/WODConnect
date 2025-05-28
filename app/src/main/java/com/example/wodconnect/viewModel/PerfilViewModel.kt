@@ -39,7 +39,7 @@ class PerfilViewModel @Inject constructor(
     private val _registroExitoso = MutableLiveData<Boolean?>()
     val registroExitoso: LiveData<Boolean?> = _registroExitoso
 
-    val errorMsg = MutableLiveData<String?>()
+    private val errorMsg = MutableLiveData<String?>()
 
     fun onNameChanged(newName: String) {
         _name.value = newName
@@ -68,11 +68,7 @@ class PerfilViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val result = perfilRepository.guardarPerfil(nombre, email, fechaNac)
-            if (result.isSuccess) {
-                _registroExitoso.value = true
-            } else {
-                _registroExitoso.value = false
-            }
+            _registroExitoso.value = result.isSuccess
         }
     }
 //Crear y guardar un usuario nuevo
@@ -90,10 +86,7 @@ class PerfilViewModel @Inject constructor(
             try {
                 firebaseAuth.createUserWithEmailAndPassword(email, password).await()
                 val uid =
-                    firebaseAuth.currentUser?.uid
-                if (uid == null){
-                    throw Exception("Usuario no identificado")
-                }
+                    firebaseAuth.currentUser?.uid ?: throw Exception("Usuario no identificado")
                 val datosPerfil = mapOf(
                     "nombre" to nombre,
                     "email" to email,
@@ -107,11 +100,9 @@ class PerfilViewModel @Inject constructor(
             }
         }
     }
-
     fun resetRegistroExitoso() {
         _registroExitoso.value = null
     }
-
     //cargar los datos del usuario en su perfil si ya esta registrado
     fun cargarPerfilUsuario(){
         val uid = firebaseAuth.currentUser?.uid ?: return
@@ -132,13 +123,12 @@ class PerfilViewModel @Inject constructor(
         }
     }
     //comprobación de fecha válida
-    fun esFechaNacimValida(fecha: String): Boolean {
+    private fun esFechaNacimValida(fecha: String): Boolean {
         return try {
             val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-//            formato.isLenient = false
             val fechaIngresada = formato.parse(fecha)
             val fechaActual = Date()
-            fechaIngresada.before(fechaActual)
+            fechaIngresada!!.before(fechaActual)
         } catch (e: Exception) {
             false
         }

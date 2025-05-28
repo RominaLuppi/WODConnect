@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,7 +40,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,8 +72,6 @@ fun ReserveScreen(
     reserveViewModel: ReserveViewModel = hiltViewModel()
 ) {
 
-    val errorMessage by reserveViewModel.errorMessage.observeAsState()
-
    Scaffold(containerColor = Color.Black,
         topBar = {
             TopAppBar(
@@ -101,7 +101,7 @@ fun ReserveScreen(
                 }
             )
         },
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController = navController) }
     ) { innerPadding ->
         Box(
             Modifier
@@ -120,7 +120,9 @@ fun ReserveScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Reserve(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
                     reserveViewModel = reserveViewModel,
                     onDaySelected = { selectedDay ->
                         reserveViewModel.obtenerClasesPorDia(selectedDay)
@@ -134,12 +136,12 @@ fun ReserveScreen(
 
 @Composable
 fun BottomBar(navController: NavController) {
-//    var showDialog by remember { mutableStateOf(false) }
+
     Surface(
         color = Color.Black,
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(58.dp)
     ) {
         Row(
             modifier = Modifier
@@ -151,34 +153,29 @@ fun BottomBar(navController: NavController) {
             BottomBarItem(
                 iconRes = R.drawable.calendar,
                 label = stringResource(R.string.icon_agenda),
-                onClick = {navController.navigate("AgendaScreen")}
-//                onClick = { showDialog = true },
+                onClick = { navController.navigate("AgendaScreen") }
             )
             BottomBarItem(
                 iconRes = R.drawable.clock,
                 label = stringResource(R.string.icon_horario),
                 onClick = { navController.navigate("HorarioScreen") },
             )
-
             BottomBarItem(
                 iconRes = R.drawable.user,
                 label = stringResource(R.string.icon_perfil),
                 onClick = { navController.navigate("PerfilScreen") },
             )
         }
-
     }
-//    if (showDialog) {
-//        BtnDialog(onDismiss = { showDialog = false })
-//    }
 }
 
 @Composable
 fun BottomBarItem(iconRes: Int, label: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
+            .fillMaxHeight()
             .clickable(onClick = onClick)
-            .padding(bottom = 8.dp),
+            .padding(bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
@@ -204,7 +201,7 @@ fun Reserve(
 ) {
 
     val daysOfWeek = reserveViewModel.daysOfWeek
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
     val selectedDate = daysOfWeek[selectedIndex].fecha
 
     val clasesPorDia by reserveViewModel.clasesPorDia.observeAsState()
@@ -214,96 +211,96 @@ fun Reserve(
     val userId = FirebaseAuth.getInstance().currentUser?.uid
 
     if (userId != null) {
-        reserveViewModel.cargarClasesYReservas(userId, selectedDate) //para actualizar las reservas del usuario registrado
+        reserveViewModel.cargarClasesYReservas(
+            userId,
+            selectedDate
+        ) //para actualizar las reservas del usuario registrado
     }
-//    LaunchedEffect(userId) {
-//        if (userId != null) {
-//            reserveViewModel.cargarReservasUser(userId)
-//        }
-//    }
+
     LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(8.dp))
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            item {
-                Box(
+        modifier = modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(8.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Black)
+                    .padding(4.dp)
+            ) {
+                LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Black)
-                        .padding(4.dp)
+                        .background(Color.Black),
+                    verticalAlignment = Alignment.CenterVertically,
+                    userScrollEnabled = true,
                 ) {
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Black),
-                        verticalAlignment = Alignment.CenterVertically,
-                        userScrollEnabled = true,
-                    ) {
-                        itemsIndexed(daysOfWeek) { index, day ->
-                            Box(
-                                modifier = Modifier
-                                    .then(
-                                        if (index == selectedIndex) {
-                                            Modifier.clip(RoundedCornerShape(4.dp))
-                                        } else {
-                                            Modifier
-                                        }
-                                    )
-                                    .background(
-                                        if (index == selectedIndex) {
-                                            colorResource(R.color.btn_color)
-                                        } else {
-                                            colorResource(R.color.background_card)
-                                        }
-                                    )
-                                    .clickable {
-                                        selectedIndex = index
-                                        onDaySelected(day.fecha)
+                    itemsIndexed(daysOfWeek) { index, day ->
+                        Box(
+                            modifier = Modifier
+                                .then(
+                                    if (index == selectedIndex) {
+                                        Modifier.clip(RoundedCornerShape(4.dp))
+                                    } else {
+                                        Modifier
                                     }
-                                    .padding(horizontal = 6.dp, vertical = 6.dp)
-
-                            ) {
-                                Text(
-                                    text = day.diaDelMes,
-                                    color = Color.Black,
-                                    style = MaterialTheme.typography.bodyMedium
                                 )
-                            }
+                                .background(
+                                    if (index == selectedIndex) {
+                                        colorResource(R.color.btn_color)
+                                    } else {
+                                        colorResource(R.color.background_card)
+                                    }
+                                )
+                                .clickable {
+                                    selectedIndex = index
+                                    onDaySelected(day.fecha)
+                                }
+                                .padding(horizontal = 6.dp, vertical = 6.dp)
+
+                        ) {
+                            Text(
+                                text = day.diaDelMes,
+                                color = Color.Black,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 }
             }
-            item {
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-            item {
-                if (!isLoading && clasesPorDia != null && clasesPorDia!!.isEmpty()) {
-                    Text(
-                        text = "No hay clases para este día",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-                }
-            }
-            items(clasesPorDia ?: emptyList()) { clase ->
-                val isReserved = clasesReservadas?.contains(clase.id)
-                ClaseItem(clase = clase,
-                    onReservedClick = {
-                        if (userId != null) {
-                            reserveViewModel.reservarClase(clase, userId)
-                        }
-                },
-                isReserved = isReserved ?: false
+        }
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+        item {
+            if (!isLoading && clasesPorDia != null && clasesPorDia!!.isEmpty()) {
+                Text(
+                    text = "No hay clases para este día",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    color = Color.White
                 )
             }
         }
+        items(clasesPorDia ?: emptyList()) { clase ->
+            val isReserved = clasesReservadas?.contains(clase.id)
+            ClaseItem(
+                clase = clase,
+                onReservedClick = {
+                    if (userId != null) {
+                        reserveViewModel.reservarClase(clase, userId)
+                    }
+                },
+                isReserved = isReserved ?: false
+            )
+        }
+    }
 }
 
 @Composable
@@ -341,12 +338,10 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit, isReserved: Bool
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${start} - ${end}",
+                    text = "$start - $end",
                     style = MaterialTheme.typography.bodySmall
                 )
-                clase.description.let {
-                    Text(text = it, style = MaterialTheme.typography.bodyMedium)
-                }
+                Text(text = clase.description, style = MaterialTheme.typography.bodyMedium)
             }
             Column(
                 modifier = Modifier
@@ -366,7 +361,7 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit, isReserved: Bool
                 ) {
 
                     Text(
-                        text = if (isReserved){
+                        text = if (isReserved) {
                             stringResource(R.string.btn_cancelar)
                         } else {
                             stringResource(R.string.btn_reserve)
