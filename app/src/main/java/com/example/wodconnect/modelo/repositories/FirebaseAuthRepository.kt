@@ -1,7 +1,6 @@
-package com.example.wodconnect.data.repository
+package com.example.wodconnect.modelo.repositories
 
 import com.example.wodconnect.data.User
-import com.example.wodconnect.modelo.repositories.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

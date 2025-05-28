@@ -41,5 +41,6 @@
     <string name="text_password_usuario">Contraseña</string>
     <string name="text_fechaNac_usuario">Fecha de Nacimiento</string>
     <string name="btn_guardar">Guardar</string>
+    <string name="btn_cancelar">Cancelar</string>
 
 </resources>

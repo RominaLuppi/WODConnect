@@ -102,4 +102,8 @@ class LoginViewModel @Inject constructor(
     fun resetRegistroExitoso(){
         _registroExitoso.value = null
     }
+    fun cargarReservasUsuarioRegistrado(userID: String){
+
+
+    }
 }

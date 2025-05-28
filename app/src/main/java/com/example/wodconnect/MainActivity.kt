@@ -22,6 +22,7 @@ import com.example.wodconnect.viewModel.LoginViewModel
 import com.example.wodconnect.view.ReserveScreen
 import com.example.wodconnect.view.ResetPasswordScreen
 import com.example.wodconnect.ui.theme.WODConnectTheme
+import com.example.wodconnect.view.AgendaScreen
 import com.example.wodconnect.view.HorarioScreen
 import com.example.wodconnect.view.PerfilScreen
 import com.example.wodconnect.viewModel.PerfilViewModel
@@ -94,6 +95,9 @@ private fun MainNavigation() {
             }
             composable("HorarioScreen") {
                HorarioScreen(navController = navController)
+            }
+            composable("AgendaScreen") {
+                AgendaScreen(navController = navController)
             }
 
         }

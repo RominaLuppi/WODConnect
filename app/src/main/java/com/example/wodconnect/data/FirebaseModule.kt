@@ -1,6 +1,6 @@
 package com.example.wodconnect.data
 
-import com.example.wodconnect.data.repository.FirebaseAuthRepository
+import com.example.wodconnect.modelo.repositories.FirebaseAuthRepository
 import com.example.wodconnect.modelo.repositories.AuthRepository
 import com.example.wodconnect.modelo.repositories.ClasesRepository
 import com.example.wodconnect.modelo.repositories.ClasesRepositoryImpl

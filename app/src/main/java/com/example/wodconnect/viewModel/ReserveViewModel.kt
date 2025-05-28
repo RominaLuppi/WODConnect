@@ -1,6 +1,5 @@
 package com.example.wodconnect.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +9,13 @@ import com.example.wodconnect.data.getDaysOfWeek
 import com.example.wodconnect.data.horariosPorDia
 import com.example.wodconnect.data.toLocalDate
 import com.example.wodconnect.modelo.repositories.ClasesRepository
+import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
-import com.google.type.DateTime
+import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
@@ -29,17 +29,23 @@ class   ReserveViewModel @Inject constructor(
     private val _allClases = MutableLiveData<List<Clases>>()
     val allClases: LiveData<List<Clases>> = _allClases
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData<Boolean>(true)
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    private val _clasesPorDia = MutableLiveData<List<Clases>>()
+    private val _clasesPorDia = MutableLiveData<List<Clases>>(null)
     val clasesPorDia: LiveData<List<Clases>> = _clasesPorDia
 
     private val _clasesSemGeneradas = MutableLiveData<List<Clases>>()
-    val clasesSemGeneradas: LiveData<List<Clases>> = _clasesSemGeneradas
+    val clasesSemGeneradas: LiveData<List<Clases>?> = _clasesSemGeneradas
+
+    private val _clasesReservadas = MutableLiveData<List<String>>()
+    val clasesReservadas: LiveData<List<String>> = _clasesReservadas
+
+    private val _reservasUsuario = MutableLiveData<List<String>>()
+    val reservasUsuario: LiveData<List<String>> = _reservasUsuario
 
     val daysOfWeek = getDaysOfWeek()
 
@@ -72,20 +78,23 @@ class   ReserveViewModel @Inject constructor(
         val plazasDisponibles = 12
         val clasesSemana = mutableListOf<Clases>()
 
-            for (dia in dias){
-                val clasesDelDia = horariosPorDia[dia.fecha.dayOfWeek] ?: emptyList()
+        for (dia in dias){
+            val clasesDelDia = horariosPorDia[dia.fecha.dayOfWeek] ?: emptyList()
 
-               for(infoClase in clasesDelDia){
-                    val startDateTime = dia.fecha.atTime(infoClase.third.first)
-                    val endDayTime = dia.fecha.atTime(infoClase.third.second)
+            for(infoClase in clasesDelDia){
+                val startDateTime = dia.fecha.atTime(infoClase.start)
+                val endDateTime = dia.fecha.atTime(infoClase.end)
 
-                   val clases = Clases(
-                        name = infoClase.first,
-                        description = infoClase.second,
-                        startTime = Timestamp(Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant())),
-                        endTime = Timestamp(Date.from(endDayTime.atZone(ZoneId.systemDefault()).toInstant())),
-                        availablePlaces = plazasDisponibles
-                   )
+                val startInstant = startDateTime.atZone(ZoneId.of("Europe/Madrid")).toInstant()
+                val endInstant = endDateTime.atZone(ZoneId.of("Europe/Madrid")).toInstant()
+
+                val clases = Clases(
+                    name = infoClase.name,
+                    description = infoClase.description,
+                    startTime = Timestamp(Date.from(startInstant)),
+                    endTime = Timestamp(Date.from(endInstant)),
+                    availablePlaces = plazasDisponibles
+                )
                    clasesSemana.add(clases)
                }
             }
@@ -124,4 +133,68 @@ class   ReserveViewModel @Inject constructor(
             }
         }
     }
+    fun reservarClase(clase: Clases, userId: String) {
+
+        viewModelScope.launch {
+            val claseId = clase.id ?: return@launch
+            val userRef = Firebase.firestore.collection("Usuarios").document(userId)
+            val reservaRef = Firebase.firestore.collection("Reservas").document(claseId)
+
+            try {
+                val snapshot = reservaRef.get().await()
+                //si la reserva existe se borra y se cancela
+                if (snapshot.exists()) {
+                    reservaRef.delete().await()
+                    _clasesReservadas.value = _clasesReservadas.value?.filter { it != claseId }
+                } else {
+                    //si la reserva no existe se guarda
+                    reservaRef.set(clase).await()
+                    _clasesReservadas.value = (_clasesReservadas.value ?: emptyList()) + claseId
+                }
+
+            } catch (e: Exception) {
+                _errorMessage.value = "Error al gestionar la reserva"
+            }
+        }
+    }
+    //se actualizan las reservas de un usuario ya registrado
+    fun cargarClasesYReservas(userId: String, selectedDay: LocalDate = LocalDate.now()) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val allClasesList = clasesRepository.obtenerClases()
+
+                // Filtrar por día seleccionado
+                _clasesPorDia.value = allClasesList
+                    .filter { it.startTime?.toLocalDate() == selectedDay }
+                    .distinctBy { Triple(it.name, it.startTime, it.endTime) }
+                    .sortedBy { it.startTime?.toDate() }
+
+                // Cargar reservas del usuario
+                val snapshot = Firebase.firestore
+                    .collection("Usuarios").document(userId)
+                    .collection("Reservas").get().await()
+
+                _clasesReservadas.value = snapshot.documents.mapNotNull { it.id }
+                _errorMessage.value = null
+            } catch (e: Exception) {
+                _errorMessage.value = "Error al cargar clases y reservas: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+//    fun cargarReservasUser(userId: String){
+//            viewModelScope.launch {
+//                try {
+//                    val snapshot = Firebase.firestore
+//                        .collection("Usuarios").document(userId)
+//                        .collection("Reservas").get().await()
+//                    _clasesReservadas.value = snapshot.documents.mapNotNull { it.id }
+//                } catch (e: Exception){
+//                    _errorMessage.value = "Error al cargar las reservas del usuario"
+//                }
+//            }
+//    }
 }

@@ -10,48 +10,53 @@ data class HorariosClasesPorDia(
     val end: LocalTime
 )
 
-
-val horariosPorDia: Map<DayOfWeek, List<Triple<String,String, Pair<LocalTime, LocalTime>>>> = mapOf(
+val horariosPorDia: Map<DayOfWeek, List<HorariosClasesPorDia>> = mapOf(
     DayOfWeek.MONDAY to listOf(
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(8,0) to LocalTime.of(9,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
-        Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30))),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(8, 0), LocalTime.of(9, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0)),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(12, 30), LocalTime.of(13, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(14, 0), LocalTime.of(15, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(16, 30), LocalTime.of(17, 30))
+    ),
     DayOfWeek.TUESDAY to listOf(
-        Triple("Halterofilia","Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
-        Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
-        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0))),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0)),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(12, 30), LocalTime.of(13, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(14, 0), LocalTime.of(15, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(16, 30), LocalTime.of(17, 30)),
+        HorariosClasesPorDia("Open box", "Entrenamiento libre", LocalTime.of(19, 0), LocalTime.of(20, 0))
+    ),
     DayOfWeek.WEDNESDAY to listOf(
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(7,0) to LocalTime.of(8,0)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(8,0) to LocalTime.of(9,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
-        Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
-        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0))),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(7, 0), LocalTime.of(8, 0)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(8, 0), LocalTime.of(9, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0)),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(12, 30), LocalTime.of(13, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(14, 0), LocalTime.of(15, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(16, 30), LocalTime.of(17, 30)),
+        HorariosClasesPorDia("Open box", "Entrenamiento libre", LocalTime.of(19, 0), LocalTime.of(20, 0))
+    ),
     DayOfWeek.THURSDAY to listOf(
-        Triple("Halterofilia","Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
-        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0)),
-        Triple("HIIT", "Media intensidad", LocalTime.of(20,15) to LocalTime.of(21,15))),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(14, 0), LocalTime.of(15, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(16, 30), LocalTime.of(17, 30)),
+        HorariosClasesPorDia("Open box", "Entrenamiento libre", LocalTime.of(19, 0), LocalTime.of(20, 0)),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(20, 15), LocalTime.of(21, 15))
+    ),
     DayOfWeek.FRIDAY to listOf(
-        Triple("HIIT", "Media intensidad", LocalTime.of(8,0) to LocalTime.of(9,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0)),
-        Triple("HIIT", "Media intensidad", LocalTime.of(12,30) to LocalTime.of(13,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(14,0) to LocalTime.of(15,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(16,30) to LocalTime.of(17,30)),
-        Triple("Open box", "Entrenamiento libre", LocalTime.of(19,0) to LocalTime.of(20,0))),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(8, 0), LocalTime.of(9, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0)),
+        HorariosClasesPorDia("HIIT", "Media intensidad", LocalTime.of(12, 30), LocalTime.of(13, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(14, 0), LocalTime.of(15, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(16, 30), LocalTime.of(17, 30)),
+        HorariosClasesPorDia("Open box", "Entrenamiento libre", LocalTime.of(19, 0), LocalTime.of(20, 0))
+    ),
     DayOfWeek.SATURDAY to listOf(
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(8,0) to LocalTime.of(9,0)),
-        Triple("Halterofilia", "Técnica de fuerza", LocalTime.of(9,30) to LocalTime.of(10,30)),
-        Triple("Crossfit", "Alta intensidad", LocalTime.of(11,0) to LocalTime.of(12,0))),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(8, 0), LocalTime.of(9, 0)),
+        HorariosClasesPorDia("Halterofilia", "Técnica de fuerza", LocalTime.of(9, 30), LocalTime.of(10, 30)),
+        HorariosClasesPorDia("Crossfit", "Alta intensidad", LocalTime.of(11, 0), LocalTime.of(12, 0))
+    )
 )

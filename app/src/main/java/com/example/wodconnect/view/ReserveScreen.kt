@@ -1,6 +1,5 @@
 package com.example.wodconnect.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -9,12 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,12 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,6 +36,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -59,15 +53,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.wodconnect.R
 import com.example.wodconnect.data.Clases
 import com.example.wodconnect.viewModel.ReserveViewModel
-import java.text.SimpleDateFormat
+import com.google.firebase.auth.FirebaseAuth
 import java.time.LocalDate
-import java.util.Locale
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +73,7 @@ fun ReserveScreen(
 
     val errorMessage by reserveViewModel.errorMessage.observeAsState()
 
-    Scaffold(containerColor = Color.Black,
+   Scaffold(containerColor = Color.Black,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
@@ -141,7 +135,7 @@ fun ReserveScreen(
 
 @Composable
 fun BottomBar(navController: NavController) {
-
+//    var showDialog by remember { mutableStateOf(false) }
     Surface(
         color = Color.Black,
         modifier = Modifier
@@ -158,7 +152,8 @@ fun BottomBar(navController: NavController) {
             BottomBarItem(
                 iconRes = R.drawable.calendar,
                 label = stringResource(R.string.icon_agenda),
-                onClick = {  },
+                onClick = {navController.navigate("AgendaScreen")}
+//                onClick = { showDialog = true },
             )
             BottomBarItem(
                 iconRes = R.drawable.clock,
@@ -174,6 +169,9 @@ fun BottomBar(navController: NavController) {
         }
 
     }
+//    if (showDialog) {
+//        BtnDialog(onDismiss = { showDialog = false })
+//    }
 }
 
 @Composable
@@ -210,112 +208,118 @@ fun Reserve(
     var selectedIndex by remember { mutableStateOf(0) }
     val selectedDate = daysOfWeek[selectedIndex].fecha
 
-    val clasesPorDia by reserveViewModel.clasesPorDia.observeAsState(emptyList())
+    val clasesPorDia by reserveViewModel.clasesPorDia.observeAsState()
     val isLoading by reserveViewModel.isLoading.observeAsState(false)
+    val clasesReservadas by reserveViewModel.clasesReservadas.observeAsState()
 
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+    if (userId != null) {
+        reserveViewModel.cargarClasesYReservas(userId, selectedDate) //para actualizar las reservas del usuario registrado
+    }
+//    LaunchedEffect(userId) {
+//        if (userId != null) {
+//            reserveViewModel.cargarReservasUser(userId)
+//        }
+//    }
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(8.dp))
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.Black)
-                    .padding(4.dp)
-            ) {
-                LazyRow(
+            modifier = modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            item {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Black),
-                    verticalAlignment = Alignment.CenterVertically,
-                    userScrollEnabled = true,
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.Black)
+                        .padding(4.dp)
                 ) {
-                    itemsIndexed(daysOfWeek) { index, day ->
-                        Box(
-                            modifier = Modifier
-                                .then(
-                                    if (index == selectedIndex) {
-                                        Modifier.clip(RoundedCornerShape(4.dp))
-                                    } else {
-                                        Modifier
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Black),
+                        verticalAlignment = Alignment.CenterVertically,
+                        userScrollEnabled = true,
+                    ) {
+                        itemsIndexed(daysOfWeek) { index, day ->
+                            Box(
+                                modifier = Modifier
+                                    .then(
+                                        if (index == selectedIndex) {
+                                            Modifier.clip(RoundedCornerShape(4.dp))
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
+                                    .background(
+                                        if (index == selectedIndex) {
+                                            colorResource(R.color.btn_color)
+                                        } else {
+                                            colorResource(R.color.background_card)
+                                        }
+                                    )
+                                    .clickable {
+                                        selectedIndex = index
+                                        onDaySelected(day.fecha)
                                     }
-                                )
-                                .background(
-                                    if (index == selectedIndex) {
-                                        colorResource(R.color.btn_color)
-                                    } else {
-                                        colorResource(R.color.background_card)
-                                    }
-                                )
-                                .clickable {
-                                    selectedIndex = index
-                                    onDaySelected(day.fecha)
-                                }
-                                .padding(horizontal = 6.dp, vertical = 6.dp)
+                                    .padding(horizontal = 6.dp, vertical = 6.dp)
 
-                        ) {
-                            Text(
-                                text = day.diaDelMes,
-                                color = Color.Black,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                            ) {
+                                Text(
+                                    text = day.diaDelMes,
+                                    color = Color.Black,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-        item {
-            Spacer(modifier = Modifier.height(12.dp))
-        }
-        item {
-            if (!isLoading && clasesPorDia.isEmpty()) {
-                Text(
-                    text = "No hay clases para este día",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.White
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                if (!isLoading && clasesPorDia != null && clasesPorDia!!.isEmpty()) {
+                    Text(
+                        text = "No hay clases para este día",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                }
+            }
+            items(clasesPorDia ?: emptyList()) { clase ->
+                val isReserved = clasesReservadas?.contains(clase.id)
+                ClaseItem(clase = clase,
+                    onReservedClick = {
+                        if (userId != null) {
+                            reserveViewModel.reservarClase(clase, userId)
+                        }
+                },
+                isReserved = isReserved ?: false
                 )
             }
         }
-        items(clasesPorDia) { clase ->
-            ClaseItem(clase = clase, onReservedClick = { })
-        }
-
-    }
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        onClick = { },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.btn_color),
-            disabledContainerColor = colorResource(R.color.btn_disable_color),
-            contentColor = Color.White,
-            disabledContentColor = Color.White
-        ),
-
-        ) {
-        Text(
-            text = stringResource(R.string.btn_workout),
-            fontSize = 20.sp
-        )
-    }
-
 }
 
 @Composable
-fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
+fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit, isReserved: Boolean) {
 
-    val formatterDate = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val start = clase.startTime?.toDate()?.let { formatterDate.format(it) } ?: ""
-    val end = clase.endTime?.toDate()?.let { formatterDate.format(it) } ?: ""
+    val zoneId = ZoneId.of("Europe/Madrid")
+    val start = clase.startTime?.toDate()?.toInstant()
+        ?.atZone(zoneId)
+        ?.toLocalTime()
+        ?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: ""
+
+    val end = clase.endTime?.toDate()?.toInstant()
+        ?.atZone(zoneId)
+        ?.toLocalTime()
+        ?.format(DateTimeFormatter.ofPattern("HH:mm")) ?: ""
 
     Card(
         modifier = Modifier
@@ -361,8 +365,13 @@ fun ClaseItem(clase: Clases, onReservedClick: (Clases) -> Unit) {
                         containerColor = colorResource(R.color.btn_color)
                     )
                 ) {
+
                     Text(
-                        text = stringResource(R.string.btn_reserve),
+                        text = if (isReserved){
+                            stringResource(R.string.btn_cancelar)
+                        } else {
+                            stringResource(R.string.btn_reserve)
+                        },
                         fontSize = 16.sp
                     )
                 }
