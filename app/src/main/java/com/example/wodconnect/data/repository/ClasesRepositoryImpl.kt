@@ -1,9 +1,8 @@
-package com.example.wodconnect.modelo.repositories
+package com.example.wodconnect.data.repository
 
 import android.util.Log
-import com.example.wodconnect.data.Clases
-import com.example.wodconnect.data.DaysOfWeek
-import com.example.wodconnect.data.getDaysOfWeek
+import com.example.wodconnect.data.model.Clases
+import com.example.wodconnect.modelo.domain.repository.ClasesRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -40,7 +39,8 @@ class ClasesRepositoryImpl @Inject constructor(
            val collection = firestore.collection("Clases")
            for (clase in clases){
                val docRef = collection.document()
-               batch.set(docRef,clase)
+               val claseConId = clase.copy(id = docRef.id)
+               batch.set(docRef,claseConId)
            }
            batch.commit().await()
            Log.d("ClasesRepository", "Clases subidas correctamente")

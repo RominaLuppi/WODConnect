@@ -1,4 +1,4 @@
-package com.example.wodconnect.data
+package com.example.wodconnect.data.model
 
 import com.google.firebase.Timestamp
 
@@ -6,7 +6,7 @@ import com.google.firebase.Timestamp
 data class Reserve(
     val id: Int,
     val userId: String,
-    val classId: String,
+    val clasesId: String,
     val reserveDate: Timestamp?,
     val reserved: Boolean
 )

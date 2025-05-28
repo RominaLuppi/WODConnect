@@ -1,6 +1,6 @@
-package com.example.wodconnect.modelo.repositories
+package com.example.wodconnect.modelo.domain.repository
 
-import com.example.wodconnect.data.User
+import com.example.wodconnect.data.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -16,9 +16,11 @@ interface AuthRepository {
                 .await()
             val user = result.user
             if(user != null){
-                Result.success(User(id = user.uid,
+                Result.success(
+                    User(id = user.uid,
                     email = user.email ?: "",
-                    name = user.displayName ?: ""))
+                    name = user.displayName ?: "")
+                )
             } else {
                 Result.failure(Exception ("No se ha podido registrar al usuario"))
             }

@@ -1,4 +1,4 @@
-package com.example.wodconnect.data
+package com.example.wodconnect.data.model
 
 
 

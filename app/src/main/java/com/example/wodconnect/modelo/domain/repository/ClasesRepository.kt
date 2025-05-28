@@ -1,7 +1,6 @@
-package com.example.wodconnect.modelo.repositories
+package com.example.wodconnect.modelo.domain.repository
 
-import com.example.wodconnect.data.Clases
-import com.example.wodconnect.data.DaysOfWeek
+import com.example.wodconnect.data.model.Clases
 
 
 interface ClasesRepository {

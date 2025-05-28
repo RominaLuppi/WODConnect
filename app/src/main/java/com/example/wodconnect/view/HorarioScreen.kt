@@ -3,6 +3,8 @@ package com.example.wodconnect.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +20,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +37,16 @@ import com.example.wodconnect.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HorarioScreen(navController: NavController) {
+
+    //permitimos hacer zoom a la imagen del horario
+    val scale = remember { mutableStateOf(1f) }
+    val offset = remember { mutableStateOf(Offset.Zero) }
+
+    val transformState = rememberTransformableState { zoomChange, offsetChange, _ ->
+        scale.value *= zoomChange
+        offset.value += offsetChange
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,8 +86,15 @@ fun HorarioScreen(navController: NavController) {
             Image(
                 painter = painterResource(R.drawable.horario),
                 contentDescription = stringResource(R.string.icon_horario),
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.graphicsLayer(
+                    scaleX = scale.value.coerceIn(1f, 5f),
+                    scaleY = scale.value.coerceIn(1f, 5f),
+                    translationX = offset.value.x,
+                    translationY = offset.value.y
+                )
+                    .transformable(state = transformState)
+
             )
         }
     }

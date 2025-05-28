@@ -64,8 +64,6 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-
-
     implementation (libs.androidx.runtime.livedata)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -88,8 +86,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)  // Agrega la dependencia de Kotlinx Serialization
     implementation(libs.retrofit2.kotlinx.serialization.converter.v080)  // Convertidor de Kotlinx para Retrofit
     implementation(libs.okhttp)
-    //Retromock
-    implementation (libs.retromock)
 
     //Room
     implementation(libs.androidx.room.runtime)
@@ -109,14 +105,9 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation (libs.firebase.storage.ktx)
-
 
     //Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
-
-//    implementation(libs.coil.compose)
-//    implementation(libs.coil.compose.base)
 
 
     testImplementation(libs.junit)

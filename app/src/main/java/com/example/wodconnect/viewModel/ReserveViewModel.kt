@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wodconnect.data.Clases
-import com.example.wodconnect.data.getDaysOfWeek
-import com.example.wodconnect.data.horariosPorDia
-import com.example.wodconnect.data.toLocalDate
-import com.example.wodconnect.modelo.repositories.ClasesRepository
+import com.example.wodconnect.data.model.Clases
+import com.example.wodconnect.data.model.getDaysOfWeek
+import com.example.wodconnect.data.model.horariosPorDia
+import com.example.wodconnect.data.model.toLocalDate
+import com.example.wodconnect.modelo.domain.repository.ClasesRepository
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.firestore
@@ -89,6 +89,7 @@ class   ReserveViewModel @Inject constructor(
                 val endInstant = endDateTime.atZone(ZoneId.of("Europe/Madrid")).toInstant()
 
                 val clases = Clases(
+                    id = Firebase.firestore.collection("Clases").document().id, //genera un id unico
                     name = infoClase.name,
                     description = infoClase.description,
                     startTime = Timestamp(Date.from(startInstant)),
@@ -136,9 +137,15 @@ class   ReserveViewModel @Inject constructor(
     fun reservarClase(clase: Clases, userId: String) {
 
         viewModelScope.launch {
-            val claseId = clase.id ?: return@launch
+
             val userRef = Firebase.firestore.collection("Usuarios").document(userId)
-            val reservaRef = Firebase.firestore.collection("Reservas").document(claseId)
+
+            // Si el ID está vacío se genera uno temporal
+            val claseId = if (clase.id.isNotEmpty()) clase.id else Firebase.firestore.collection("Reservas").document().id
+
+            val claseConId = clase.copy(id = claseId)
+
+            val reservaRef = userRef.collection("Reservas").document(claseId)
 
             try {
                 val snapshot = reservaRef.get().await()
@@ -148,7 +155,7 @@ class   ReserveViewModel @Inject constructor(
                     _clasesReservadas.value = _clasesReservadas.value?.filter { it != claseId }
                 } else {
                     //si la reserva no existe se guarda
-                    reservaRef.set(clase).await()
+                    reservaRef.set(claseConId).await()
                     _clasesReservadas.value = (_clasesReservadas.value ?: emptyList()) + claseId
                 }
 
@@ -184,17 +191,4 @@ class   ReserveViewModel @Inject constructor(
             }
         }
     }
-
-//    fun cargarReservasUser(userId: String){
-//            viewModelScope.launch {
-//                try {
-//                    val snapshot = Firebase.firestore
-//                        .collection("Usuarios").document(userId)
-//                        .collection("Reservas").get().await()
-//                    _clasesReservadas.value = snapshot.documents.mapNotNull { it.id }
-//                } catch (e: Exception){
-//                    _errorMessage.value = "Error al cargar las reservas del usuario"
-//                }
-//            }
-//    }
 }

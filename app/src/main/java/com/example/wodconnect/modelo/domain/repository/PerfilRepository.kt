@@ -1,4 +1,4 @@
-package com.example.wodconnect.modelo.repositories
+package com.example.wodconnect.modelo.domain.repository
 
 
 import com.google.firebase.auth.FirebaseAuth

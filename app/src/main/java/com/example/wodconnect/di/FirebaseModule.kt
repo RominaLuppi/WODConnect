@@ -1,12 +1,11 @@
-package com.example.wodconnect.data
+package com.example.wodconnect.di
 
-import com.example.wodconnect.modelo.repositories.FirebaseAuthRepository
-import com.example.wodconnect.modelo.repositories.AuthRepository
-import com.example.wodconnect.modelo.repositories.ClasesRepository
-import com.example.wodconnect.modelo.repositories.ClasesRepositoryImpl
+import com.example.wodconnect.data.repository.FirebaseAuthRepository
+import com.example.wodconnect.modelo.domain.repository.AuthRepository
+import com.example.wodconnect.modelo.domain.repository.ClasesRepository
+import com.example.wodconnect.data.repository.ClasesRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +34,4 @@ object FirebaseModule {
     fun provideClasesFirestoreRepository(firestore: FirebaseFirestore): ClasesRepository =
         ClasesRepositoryImpl(firestore)
 
-    @Provides
-    @Singleton
-    fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 }
