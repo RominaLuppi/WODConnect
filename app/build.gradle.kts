@@ -74,7 +74,6 @@ dependencies {
 
     implementation (libs.kotlin.stdlib)
 
-
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 

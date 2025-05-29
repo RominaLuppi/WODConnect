@@ -16,6 +16,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository
 
+
 ) : ViewModel() {
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> = _user
@@ -39,7 +40,7 @@ class LoginViewModel @Inject constructor(
         _isLoading.value = true
         _errorMessage.value = null
 
-        viewModelScope.launch {
+        viewModelScope.launch() {
             val result = authRepository.login(email, password)
             _isLoading.value = false
             result

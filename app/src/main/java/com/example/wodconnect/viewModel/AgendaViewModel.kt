@@ -33,6 +33,5 @@ import javax.inject.Inject
                 .addOnFailureListener {
                     _clasesReservadas.value = emptyList()
                 }
-
         }
 }
