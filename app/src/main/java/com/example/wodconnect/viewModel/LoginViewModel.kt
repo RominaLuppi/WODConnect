@@ -48,7 +48,8 @@ class LoginViewModel @Inject constructor(
                     _user.value = User(
                         id =  firebaseUser.id,
                         email = firebaseUser.email,
-                        name = firebaseUser.name
+                        name = firebaseUser.name,
+                        role = firebaseUser.role
                     )
                 }
                 .onFailure { exception ->
