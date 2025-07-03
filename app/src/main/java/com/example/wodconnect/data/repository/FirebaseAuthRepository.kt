@@ -18,17 +18,19 @@ class FirebaseAuthRepository @Inject constructor(
             val result = auth.signInWithEmailAndPassword(email,password).await()
             val firebaseUser = result.user
             if(firebaseUser != null){
-                val role = getUserRole(firebaseUser.uid) ?: "user"
+                val doc = firestore.collection("roles").document(firebaseUser.uid).get().await()
+               // val role = getUserRole(firebaseUser.uid) ?: "user"
+                val role = doc.getString("role") ?: "user"
 
-                Result.success(
-                    User(
+                val user = User(
                         id = firebaseUser.uid,
                         email = firebaseUser.email ?: "",
                         name = firebaseUser.displayName ?: "",
                         role = role
                     )
-                )
-            }else {
+                Result.success(user)
+
+                } else {
                 Result.failure(Exception("Usuario no encontrado"))
             }
 

@@ -43,4 +43,7 @@
     <string name="btn_guardar">Guardar</string>
     <string name="btn_cancelar">Cancelar</string>
 
+    <string name="title_admin_screen">Panel de Administración</string>
+    <string name="welcome_admin_screen">Bienvenid@</string>
+    <string name="btn_admin_gestion">Gestión de Usuarios</string>
 </resources>

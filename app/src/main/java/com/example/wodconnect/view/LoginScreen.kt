@@ -70,14 +70,19 @@ fun LoginScreen(
     val email by loginViewModel.email.observeAsState("")
     val password by loginViewModel.password.observeAsState("")
 
-
-    //si el User no es null se navega a la pantalla HomeScreen
     LaunchedEffect(user) {
         user?.let {
-            navController.navigate("ReserveScreen") {
-                popUpTo("LoginScreen") {
-                    inclusive = true
-                } //elimina la pantalla de login del backstack.
+            when(it.role){
+                "admin" -> navController.navigate("AdminScreen"){
+                    popUpTo("LoginScreen") { inclusive = true} //elimina la pantalla de login del backstack.
+                }
+                "owner" -> navController.navigate("OwnerScreen"){
+                    popUpTo("LoginScreen") { inclusive = true}
+                }
+                "user" -> navController.navigate("ReserveScreen") {
+                    popUpTo("LoginScreen") { inclusive = true }
+                }
+                else -> { Toast.makeText(context, "Rol desconocido: ${it.role}", Toast.LENGTH_SHORT).show()}
             }
         }
     }
@@ -233,7 +238,6 @@ fun BtnLogin(
         onClick = { loginViewModel.login(email, password) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
             .padding(horizontal = 32.dp)
             .height(48.dp),
         colors = ButtonDefaults.buttonColors(
